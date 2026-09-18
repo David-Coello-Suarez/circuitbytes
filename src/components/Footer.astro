@@ -1,0 +1,36 @@
+---
+import { site } from "../data/site";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site">
+	<div class="wrap foot">
+		<span>© {year} {site.name}. Todos los derechos reservados.</span>
+		<a href={`mailto:${site.email}`}>{site.email}</a>
+	</div>
+</footer>
+
+<style>
+	.site {
+		padding-block: 30px;
+		border-top: 1px solid var(--border);
+	}
+
+	.foot {
+		display: flex;
+		justify-content: space-between;
+		gap: 16px;
+		flex-wrap: wrap;
+		font-size: 0.82rem;
+		color: var(--muted);
+	}
+
+	.foot a {
+		text-decoration: none;
+	}
+
+	.foot a:hover {
+		color: var(--accent);
+	}
+</style>

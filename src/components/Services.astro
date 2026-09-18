@@ -1,0 +1,58 @@
+---
+import { services, type ServiceIcon } from "../data/services";
+
+/** Trazos SVG por icono. Van inline para no cargar una librería entera. */
+const icons: Record<ServiceIcon, string> = {
+	web: '<rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 20h8"/>',
+	mobile: '<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/>',
+	api: '<path d="M4 7h16M4 12h16M4 17h10"/>',
+	modernize: '<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/>',
+};
+---
+
+<section id="servicios">
+	<div class="wrap">
+		<div class="head">
+			<span class="mono">Servicios</span>
+			<h2>Todo lo que necesitas para llevar una idea a producción</h2>
+			<p>
+				Nos hacemos cargo del ciclo completo: análisis, diseño, desarrollo,
+				despliegue y soporte.
+			</p>
+		</div>
+
+		<div class="grid-2">
+			{
+				services.map((service) => (
+					<article class="card card-hover">
+						<div class="ico">
+							<svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[service.icon]} />
+						</div>
+						<h3>{service.title}</h3>
+						<p>{service.description}</p>
+					</article>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	.ico {
+		width: 40px;
+		height: 40px;
+		border-radius: 10px;
+		background: var(--accent-soft);
+		display: grid;
+		place-items: center;
+		margin-bottom: 18px;
+	}
+
+	.ico svg {
+		width: 20px;
+		height: 20px;
+		stroke: var(--accent);
+		fill: none;
+		stroke-width: 1.7;
+	}
+</style>

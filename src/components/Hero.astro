@@ -1,0 +1,240 @@
+---
+import { site } from "../data/site";
+
+/** Alturas de las barras del gráfico decorativo del mockup. */
+const bars = [40, 68, 52, 92, 60, 34];
+---
+
+<section class="hero" id="top">
+	<div class="wrap split">
+		<div>
+			<span class="mono">{site.tagline}</span>
+			<h1>Tu operación merece <em>software propio</em>, no parches.</h1>
+			<p class="lead">
+				Construimos las aplicaciones web, móviles y de escritorio que tu empresa
+				necesita, con plazos cerrados y el código en tu poder.
+			</p>
+
+			<div class="cta">
+				<a class="btn btn-primary" href="#contacto">Agendar reunión</a>
+				<a class="btn btn-ghost" href="#proyectos">Ver proyectos</a>
+			</div>
+
+			{
+				site.available && (
+					<p class="trust">
+						<span class="dot" aria-hidden="true" />
+						Disponibles para nuevos proyectos · {site.responseTime}
+					</p>
+				)
+			}
+		</div>
+
+		<div class="mock" aria-hidden="true">
+			<div class="panel panel-main">
+				<div class="tl"><i></i><i></i><i></i></div>
+				<div class="line w40 acc"></div>
+				<div class="line w85"></div>
+				<div class="line w55"></div>
+				<div class="line w70"></div>
+				<div class="bars">
+					{bars.map((h) => <i style={`height:${h}%`} />)}
+				</div>
+			</div>
+
+			<div class="panel panel-float">
+				<b>99.9%</b>
+				<span>disponibilidad en producción</span>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.hero {
+		padding-block: 104px 96px;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.hero::before {
+		content: "";
+		position: absolute;
+		top: -180px;
+		right: -120px;
+		width: 620px;
+		height: 620px;
+		border-radius: 50%;
+		background: radial-gradient(circle, rgba(34, 211, 238, 0.13), transparent 62%);
+		pointer-events: none;
+	}
+
+	.split {
+		display: grid;
+		grid-template-columns: 1.05fr 0.95fr;
+		gap: 64px;
+		align-items: center;
+		position: relative;
+		z-index: 1;
+	}
+
+	h1 {
+		font-size: clamp(2.2rem, 5.2vw, 3.5rem);
+		margin: 18px 0 22px;
+	}
+
+	h1 em {
+		font-style: normal;
+		color: var(--accent);
+	}
+
+	.lead {
+		color: var(--muted);
+		font-size: 1.05rem;
+		max-width: 48ch;
+	}
+
+	.cta {
+		display: flex;
+		gap: 13px;
+		flex-wrap: wrap;
+		margin-top: 34px;
+	}
+
+	.trust {
+		margin-top: 34px;
+		font-size: 0.82rem;
+		color: var(--muted);
+		display: flex;
+		gap: 8px;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+
+	.trust .dot {
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: var(--ok);
+		flex-shrink: 0;
+		box-shadow: 0 0 8px var(--ok);
+	}
+
+	/* ── mockup decorativo ── */
+	.mock {
+		position: relative;
+		min-height: 330px;
+	}
+
+	.panel {
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.8);
+	}
+
+	.panel-main {
+		padding: 16px;
+	}
+
+	.tl {
+		display: flex;
+		gap: 6px;
+		margin-bottom: 16px;
+	}
+
+	.tl i {
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background: var(--border);
+		display: block;
+	}
+
+	.line {
+		height: 9px;
+		border-radius: 5px;
+		background: var(--border);
+		margin-bottom: 10px;
+	}
+
+	.w40 {
+		width: 40%;
+	}
+	.w55 {
+		width: 55%;
+	}
+	.w70 {
+		width: 70%;
+	}
+	.w85 {
+		width: 85%;
+	}
+
+	.acc {
+		background: linear-gradient(90deg, var(--accent), rgba(34, 211, 238, 0.25));
+		width: 30%;
+	}
+
+	.bars {
+		display: flex;
+		align-items: flex-end;
+		gap: 8px;
+		height: 88px;
+		margin-top: 20px;
+	}
+
+	.bars i {
+		flex: 1;
+		background: var(--border);
+		border-radius: 4px 4px 0 0;
+		display: block;
+	}
+
+	.bars i:nth-child(2) {
+		background: rgba(34, 211, 238, 0.4);
+	}
+
+	.bars i:nth-child(4) {
+		background: var(--accent);
+	}
+
+	.panel-float {
+		position: absolute;
+		right: -6px;
+		bottom: -18px;
+		width: 190px;
+		padding: 16px;
+	}
+
+	.panel-float b {
+		display: block;
+		font-size: 1.4rem;
+		color: var(--accent);
+		letter-spacing: -0.02em;
+	}
+
+	.panel-float span {
+		font-size: 0.76rem;
+		color: var(--muted);
+	}
+
+	@media (max-width: 900px) {
+		.split {
+			grid-template-columns: 1fr;
+			gap: 48px;
+		}
+	}
+
+	@media (max-width: 540px) {
+		.panel-float {
+			position: static;
+			width: 100%;
+			margin-top: 20px;
+		}
+
+		.mock {
+			min-height: 0;
+		}
+	}
+</style>

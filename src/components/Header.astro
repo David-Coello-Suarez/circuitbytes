@@ -1,0 +1,213 @@
+---
+import { nav, site } from "../data/site";
+---
+
+<header>
+	<div class="wrap bar">
+		<a class="logo" href="#top">
+			<span class="mark" aria-hidden="true"></span>
+			{site.name}
+		</a>
+
+		<nav id="nav-principal" aria-label="Principal">
+			<ul>
+				{nav.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+			</ul>
+		</nav>
+
+		<a class="btn btn-primary cta-desktop" href="#contacto">Agendar reunión</a>
+
+		<button
+			class="burger"
+			type="button"
+			aria-expanded="false"
+			aria-controls="nav-principal"
+			aria-label="Abrir menú"
+		>
+			<span aria-hidden="true"></span>
+			<span aria-hidden="true"></span>
+		</button>
+	</div>
+</header>
+
+<script>
+	const header = document.querySelector("header");
+	const burger = document.querySelector<HTMLButtonElement>(".burger");
+	const nav = document.querySelector<HTMLElement>("#nav-principal");
+
+	if (header && burger && nav) {
+		const setOpen = (open: boolean) => {
+			header.classList.toggle("is-open", open);
+			burger.setAttribute("aria-expanded", String(open));
+			burger.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+		};
+
+		burger.addEventListener("click", () => {
+			setOpen(burger.getAttribute("aria-expanded") !== "true");
+		});
+
+		// cerrar al elegir un destino o al pulsar Escape
+		nav.addEventListener("click", (event) => {
+			if ((event.target as HTMLElement).closest("a")) setOpen(false);
+		});
+
+		document.addEventListener("keydown", (event) => {
+			if (event.key === "Escape" && header.classList.contains("is-open")) {
+				setOpen(false);
+				burger.focus();
+			}
+		});
+	}
+</script>
+
+<style>
+	header {
+		position: sticky;
+		top: 0;
+		z-index: 20;
+		background: rgba(11, 13, 18, 0.75);
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
+		border-bottom: 1px solid var(--border);
+	}
+
+	.bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: var(--header-h);
+		gap: 20px;
+	}
+
+	.logo {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		font-weight: 600;
+		text-decoration: none;
+	}
+
+	.mark {
+		width: 26px;
+		height: 26px;
+		border-radius: 7px;
+		flex-shrink: 0;
+		background: linear-gradient(140deg, var(--accent), #0e7490);
+		box-shadow: 0 0 18px rgba(34, 211, 238, 0.35);
+	}
+
+	nav ul {
+		display: flex;
+		gap: 28px;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	nav a {
+		text-decoration: none;
+		font-size: 0.89rem;
+		color: var(--muted);
+		transition: color 0.18s;
+	}
+
+	nav a:hover {
+		color: var(--text);
+	}
+
+	/* ── botón hamburguesa ── */
+	.burger {
+		display: none;
+		width: 42px;
+		height: 42px;
+		padding: 0;
+		background: transparent;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-sm);
+		cursor: pointer;
+		position: relative;
+	}
+
+	.burger span {
+		position: absolute;
+		left: 50%;
+		width: 17px;
+		height: 1.5px;
+		background: var(--text);
+		border-radius: 2px;
+		transform: translateX(-50%);
+		transition: 0.22s;
+	}
+
+	.burger span:first-child {
+		top: 16px;
+	}
+
+	.burger span:last-child {
+		bottom: 16px;
+	}
+
+	:global(header.is-open) .burger span:first-child {
+		top: 50%;
+		transform: translate(-50%, -50%) rotate(45deg);
+	}
+
+	:global(header.is-open) .burger span:last-child {
+		bottom: 50%;
+		transform: translate(-50%, 50%) rotate(-45deg);
+	}
+
+	@media (max-width: 900px) {
+		.cta-desktop {
+			display: none;
+		}
+
+		.burger {
+			display: block;
+		}
+
+		/* el menú se despliega bajo la barra, no se superpone al contenido */
+		nav {
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 100%;
+			/* opaco: el hero tiene texto grande y claro que se transparentaría detrás */
+			background: var(--bg);
+			border-bottom: 1px solid var(--border);
+			box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.9);
+			display: grid;
+			grid-template-rows: 0fr;
+			visibility: hidden;
+			transition:
+				grid-template-rows 0.25s ease,
+				visibility 0.25s;
+		}
+
+		:global(header.is-open) nav {
+			grid-template-rows: 1fr;
+			visibility: visible;
+		}
+
+		nav ul {
+			flex-direction: column;
+			gap: 0;
+			overflow: hidden;
+			padding-inline: var(--gutter);
+		}
+
+		nav li {
+			border-top: 1px solid var(--border);
+		}
+
+		nav li:first-child {
+			border-top: none;
+		}
+
+		nav a {
+			display: block;
+			padding: 16px 0;
+			font-size: 0.98rem;
+		}
+	}
+</style>

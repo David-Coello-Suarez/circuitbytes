@@ -1,0 +1,51 @@
+---
+import { metrics } from "../data/site";
+---
+
+<section class="metrics" aria-label="Cifras del estudio">
+	<div class="wrap metrics-grid">
+		{
+			metrics.map((metric) => (
+				<div class="metric">
+					<b>{metric.value}</b>
+					<span>{metric.label}</span>
+				</div>
+			))
+		}
+	</div>
+</section>
+
+<style>
+	.metrics {
+		background: var(--surface);
+		border-block: 1px solid var(--border);
+	}
+
+	.metrics-grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 32px;
+		text-align: center;
+	}
+
+	.metric b {
+		display: block;
+		font-size: clamp(1.9rem, 4vw, 2.6rem);
+		color: var(--accent);
+		font-weight: 600;
+		letter-spacing: -0.03em;
+		line-height: 1.1;
+	}
+
+	.metric span {
+		font-size: 0.85rem;
+		color: var(--muted);
+	}
+
+	@media (max-width: 760px) {
+		.metrics-grid {
+			grid-template-columns: 1fr 1fr;
+			gap: 28px;
+		}
+	}
+</style>

@@ -1,6 +1,9 @@
 # build output
 dist/
 
+# prototipos HTML de validación de diseño (no forman parte del sitio)
+prototypes/
+
 # generated types
 .astro/
 

@@ -1,0 +1,196 @@
+---
+import { site } from "../data/site";
+---
+
+<section id="contacto" class="contact">
+	<div class="wrap contact-split">
+		<div>
+			<span class="mono">Contacto</span>
+			<h2>Cuéntanos qué necesitas</h2>
+			<p class="lead">
+				Escríbenos con una descripción breve del problema. Te respondemos en menos de
+				24 horas hábiles con los siguientes pasos.
+			</p>
+
+			<div class="direct">
+				<a href={`mailto:${site.email}`}>
+					<span class="k">EMAIL</span>{site.email}
+				</a>
+				<a href={site.phoneHref}>
+					<span class="k">TEL</span>{site.phone}
+				</a>
+				<p><span class="k">HORARIO</span>{site.schedule}</p>
+			</div>
+		</div>
+
+		{/*
+			Sin backend: el envío abre el cliente de correo del visitante con el
+			mensaje ya redactado. Para recibirlo por HTTP, reemplazar el listener
+			del script por un POST a un servicio (Formspree, Resend, endpoint Astro).
+		*/}
+		<form id="contacto-form">
+			<div>
+				<label for="nombre">Nombre</label>
+				<input id="nombre" name="nombre" type="text" placeholder="Tu nombre" required />
+			</div>
+			<div>
+				<label for="email">Email</label>
+				<input
+					id="email"
+					name="email"
+					type="email"
+					placeholder="tu@empresa.com"
+					required
+				/>
+			</div>
+			<div>
+				<label for="mensaje">Mensaje</label>
+				<textarea
+					id="mensaje"
+					name="mensaje"
+					placeholder="Cuéntanos brevemente qué necesitas"
+					required></textarea>
+			</div>
+			<button class="btn btn-primary" type="submit">Enviar mensaje</button>
+			<p class="note">
+				Se abrirá tu cliente de correo. ¿Prefieres escribir directo?
+				<a href={`mailto:${site.email}`}>{site.email}</a>
+			</p>
+		</form>
+	</div>
+</section>
+
+<script is:inline define:vars={{ email: site.email }}>
+	const form = document.querySelector("#contacto-form");
+
+	form?.addEventListener("submit", (event) => {
+		event.preventDefault();
+		const data = new FormData(form);
+		const nombre = String(data.get("nombre") ?? "");
+		const mensaje = String(data.get("mensaje") ?? "");
+		const remitente = String(data.get("email") ?? "");
+
+		const asunto = encodeURIComponent(`Consulta de ${nombre}`);
+		const cuerpo = encodeURIComponent(`${mensaje}\n\n—\n${nombre}\n${remitente}`);
+
+		window.location.href = `mailto:${email}?subject=${asunto}&body=${cuerpo}`;
+	});
+</script>
+
+<style>
+	.contact {
+		border-top: 1px solid var(--border);
+	}
+
+	.contact-split {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 56px;
+		align-items: start;
+	}
+
+	h2 {
+		font-size: clamp(1.8rem, 3.6vw, 2.4rem);
+		margin: 14px 0 16px;
+	}
+
+	.lead {
+		color: var(--muted);
+	}
+
+	.direct {
+		margin-top: 30px;
+		display: grid;
+		gap: 12px;
+	}
+
+	.direct a,
+	.direct p {
+		text-decoration: none;
+		font-size: 0.95rem;
+		display: flex;
+		gap: 10px;
+		align-items: center;
+	}
+
+	.direct a:hover {
+		color: var(--accent);
+	}
+
+	.k {
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		color: var(--muted);
+		width: 72px;
+		flex-shrink: 0;
+	}
+
+	form {
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		padding: 28px;
+		display: grid;
+		gap: 15px;
+	}
+
+	label {
+		font-size: 0.82rem;
+		color: var(--muted);
+		display: block;
+		margin-bottom: 7px;
+	}
+
+	input,
+	textarea {
+		width: 100%;
+		background: var(--bg);
+		border: 1px solid var(--border);
+		border-radius: var(--radius-sm);
+		padding: 11px 13px;
+		color: var(--text);
+		font: inherit;
+		font-size: 0.92rem;
+	}
+
+	input::placeholder,
+	textarea::placeholder {
+		color: #5a6274;
+	}
+
+	input:focus-visible,
+	textarea:focus-visible {
+		border-color: var(--accent);
+	}
+
+	textarea {
+		resize: vertical;
+		min-height: 110px;
+	}
+
+	button {
+		font: inherit;
+		font-weight: 500;
+		font-size: 0.92rem;
+		padding: 12px 22px;
+		text-align: center;
+	}
+
+	.note {
+		font-size: 0.75rem;
+		color: var(--muted);
+		text-align: center;
+	}
+
+	.note a {
+		color: var(--accent);
+		text-decoration: none;
+	}
+
+	@media (max-width: 900px) {
+		.contact-split {
+			grid-template-columns: 1fr;
+			gap: 40px;
+		}
+	}
+</style>
