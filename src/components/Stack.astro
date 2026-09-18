@@ -3,7 +3,7 @@ import { stack } from "../data/site";
 ---
 
 <div class="stack">
-	<h3 class="mono">Stack</h3>
+	<h3>Stack</h3>
 	<ul class="chips">
 		{stack.map((tech) => <li class="chip">{tech}</li>)}
 	</ul>
@@ -11,30 +11,33 @@ import { stack } from "../data/site";
 
 <style>
 	.stack {
-		margin-top: 44px;
+		margin-top: var(--space-8);
+		padding-top: var(--space-6);
+		border-top: 1px solid var(--border);
 	}
 
 	.stack h3 {
-		font-weight: 400;
-		margin-bottom: 20px;
+		font-size: 0.95rem;
+		font-weight: 500;
+		color: var(--muted);
+		margin-bottom: var(--space-4);
 	}
 
 	.chips {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 10px;
+		gap: var(--space-2);
 		list-style: none;
 		margin: 0;
 		padding: 0;
 	}
 
 	.chip {
-		font-family: var(--font-mono);
-		font-size: 0.79rem;
-		color: var(--muted);
+		font-size: 0.85rem;
+		color: var(--text);
 		border: 1px solid var(--border);
-		border-radius: 7px;
-		padding: 8px 14px;
+		border-radius: var(--radius-md);
+		padding: 0.4rem 0.8rem;
 		background: var(--surface);
 	}
 </style>

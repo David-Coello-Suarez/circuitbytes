@@ -5,7 +5,6 @@ import { site } from "../data/site";
 <section id="contacto" class="contact">
 	<div class="wrap contact-split">
 		<div>
-			<span class="mono">Contacto</span>
 			<h2>Cuéntanos qué necesitas</h2>
 			<p class="lead">
 				Escríbenos con una descripción breve del problema. Te respondemos en menos de
@@ -71,7 +70,7 @@ import { site } from "../data/site";
 		const remitente = String(data.get("email") ?? "");
 
 		const asunto = encodeURIComponent(`Consulta de ${nombre}`);
-		const cuerpo = encodeURIComponent(`${mensaje}\n\n—\n${nombre}\n${remitente}`);
+		const cuerpo = encodeURIComponent(`${mensaje}\n\n--\n${nombre}\n${remitente}`);
 
 		window.location.href = `mailto:${email}?subject=${asunto}&body=${cuerpo}`;
 	});
@@ -128,7 +127,7 @@ import { site } from "../data/site";
 	form {
 		background: var(--surface);
 		border: 1px solid var(--border);
-		border-radius: var(--radius);
+		border-radius: var(--radius-lg);
 		padding: 28px;
 		display: grid;
 		gap: 15px;
@@ -146,7 +145,7 @@ import { site } from "../data/site";
 		width: 100%;
 		background: var(--bg);
 		border: 1px solid var(--border);
-		border-radius: var(--radius-sm);
+		border-radius: var(--radius-md);
 		padding: 11px 13px;
 		color: var(--text);
 		font: inherit;
@@ -155,7 +154,7 @@ import { site } from "../data/site";
 
 	input::placeholder,
 	textarea::placeholder {
-		color: #5a6274;
+		color: var(--faint);
 	}
 
 	input:focus-visible,

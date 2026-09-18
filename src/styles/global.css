@@ -1,26 +1,66 @@
 /* ─────────────────────────────────────────────
-   CircuitBits — tokens y base
+   CircuitBits - tokens y base
    Dirección visual: dark tech / minimalista
    ───────────────────────────────────────────── */
 
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
 :root {
+	/* ── color ── */
 	--bg: #0b0d12;
 	--surface: #12151d;
+	--surface-2: #171b25;
 	--border: #1f2530;
+	--border-strong: #2b3342;
 	--text: #e6e9ef;
+	/* 6.4:1 sobre --bg */
 	--muted: #8b94a7;
+	/* 5.1:1 sobre --bg: mínimo AA para placeholders */
+	--faint: #7a8396;
 	--accent: #22d3ee;
 	--accent-ink: #06222a;
 	--accent-soft: rgba(34, 211, 238, 0.1);
 	--ok: #34d399;
 
-	--font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-	--font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+	/* ── tipografía ── */
+	--font-sans: "Geist Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-mono: "Geist Mono Variable", ui-monospace, Consolas, monospace;
+
+	/* ── escala de espaciado (base 4px) ── */
+	--space-1: 0.25rem;
+	--space-2: 0.5rem;
+	--space-3: 0.75rem;
+	--space-4: 1rem;
+	--space-5: 1.5rem;
+	--space-6: 2rem;
+	--space-7: 3rem;
+	--space-8: 4rem;
+	--space-9: 6rem;
+	--space-10: 8rem;
+
+	/* ── radios: escala fija, tres pasos ──
+	   lg  paneles, tarjetas, formularios
+	   md  botones, campos, chips
+	   sm  etiquetas pequeñas
+	   pill avatares y puntos */
+	--radius-lg: 16px;
+	--radius-md: 10px;
+	--radius-sm: 6px;
+	--radius-pill: 999px;
+
+	/* ── profundidad: desplazamiento + difuminado, nunca halo ── */
+	--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+	--shadow-md: 0 8px 24px -12px rgba(0, 0, 0, 0.7);
+	--shadow-lg: 0 24px 60px -24px rgba(0, 0, 0, 0.85);
+
+	/* ── motion ── */
+	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--dur-fast: 140ms;
+	--dur-base: 220ms;
 
 	--max: 1180px;
 	--gutter: 24px;
-	--radius: 14px;
-	--radius-sm: 9px;
 	--header-h: 66px;
 }
 
@@ -33,7 +73,9 @@
 html {
 	scroll-behavior: smooth;
 	/* evita que el header sticky tape el título de la sección al navegar por anclas */
-	scroll-padding-top: calc(var(--header-h) + 16px);
+	scroll-padding-top: calc(var(--header-h) + var(--space-4));
+	/* el navegador ya sabe que el documento es oscuro: scrollbar, formularios, caret */
+	color-scheme: dark;
 }
 
 body {
@@ -44,11 +86,14 @@ body {
 	font-size: 16px;
 	line-height: 1.6;
 	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
 	overflow-x: hidden;
 }
 
 a {
 	color: inherit;
+	text-underline-offset: 0.2em;
+	text-decoration-thickness: 1px;
 }
 
 img,
@@ -57,27 +102,75 @@ svg {
 	max-width: 100%;
 }
 
+/* ── superficies del navegador: sin ellas la página se ve ensamblada, no construida ── */
+
+::selection {
+	background: var(--accent);
+	color: var(--accent-ink);
+}
+
+:root {
+	caret-color: var(--accent);
+	scrollbar-color: var(--border-strong) var(--bg);
+	scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--border-strong);
+	border-radius: var(--radius-pill);
+	border: 2px solid var(--bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #3a4456;
+}
+
 :focus-visible {
 	outline: 2px solid var(--accent);
 	outline-offset: 3px;
-	border-radius: 2px;
+	border-radius: var(--radius-sm);
 }
+
+/* ── tipografía ── */
 
 h1,
 h2,
 h3 {
-	line-height: 1.18;
 	margin: 0;
 	font-weight: 600;
+	line-height: 1.12;
+	/* suelo de tracking del craft floor */
+	letter-spacing: -0.032em;
+	text-wrap: balance;
+}
+
+h3 {
 	letter-spacing: -0.02em;
+	line-height: 1.25;
 }
 
 p {
 	margin: 0;
+	text-wrap: pretty;
+}
+
+/* los números se alinean en columna y no bailan al animarse */
+.tabular {
+	font-variant-numeric: tabular-nums;
 }
 
 section {
-	padding-block: 90px;
+	/* más aire arriba que abajo: la separación pertenece al encabezado que llega */
+	padding-block: var(--space-9) var(--space-8);
 }
 
 /* ── utilidades compartidas ── */
@@ -89,56 +182,57 @@ section {
 	padding-inline: var(--gutter);
 }
 
-.mono {
-	font-family: var(--font-mono);
-	font-size: 0.78rem;
-	letter-spacing: 0.08em;
-	color: var(--accent);
-	text-transform: uppercase;
-}
-
 .muted {
 	color: var(--muted);
 }
 
 /* encabezado de sección */
 .head {
-	max-width: 52ch;
-	margin-bottom: 44px;
+	max-width: 46ch;
+	margin-bottom: var(--space-7);
 }
 
 .head h2 {
-	font-size: clamp(1.7rem, 3.4vw, 2.35rem);
-	margin: 14px 0 12px;
+	font-size: clamp(1.75rem, 3.6vw, 2.4rem);
+	margin-bottom: var(--space-3);
 }
 
 .head p {
 	color: var(--muted);
+	max-width: 62ch;
 }
 
 /* botones */
 .btn {
-	display: inline-block;
-	padding: 11px 22px;
-	border-radius: var(--radius-sm);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.7rem 1.35rem;
+	border-radius: var(--radius-md);
 	text-decoration: none;
-	font-size: 0.9rem;
+	font-size: 0.925rem;
 	font-weight: 500;
+	letter-spacing: -0.005em;
 	border: 1px solid var(--border);
-	transition: 0.18s;
-	white-space: nowrap;
 	cursor: pointer;
+	white-space: nowrap;
+	transition:
+		background-color var(--dur-base) var(--ease-out),
+		border-color var(--dur-base) var(--ease-out),
+		color var(--dur-base) var(--ease-out),
+		transform var(--dur-fast) var(--ease-out);
 }
 
 .btn-primary {
 	background: var(--accent);
 	color: var(--accent-ink);
 	border-color: var(--accent);
+	box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover {
-	filter: brightness(1.12);
-	transform: translateY(-1px);
+	background: color-mix(in oklab, var(--accent) 88%, white);
+	border-color: color-mix(in oklab, var(--accent) 88%, white);
 }
 
 .btn-ghost {
@@ -146,46 +240,33 @@ section {
 }
 
 .btn-ghost:hover {
-	border-color: var(--accent);
-	color: var(--accent);
+	border-color: var(--border-strong);
+	background: var(--surface);
 }
 
-/* tarjeta genérica */
-.card {
+/* empuje físico al pulsar */
+.btn:active {
+	transform: translateY(1px);
+}
+
+/* superficie elevada */
+.panel {
 	background: var(--surface);
 	border: 1px solid var(--border);
-	border-radius: var(--radius);
-	padding: 30px;
-	transition: 0.2s;
-}
-
-.card h3 {
-	font-size: 1.1rem;
-	margin-bottom: 10px;
-}
-
-.card p {
-	color: var(--muted);
-	font-size: 0.93rem;
-}
-
-.card-hover:hover {
-	transform: translateY(-4px);
-	border-color: rgba(34, 211, 238, 0.45);
-	box-shadow: 0 18px 40px -22px rgba(34, 211, 238, 0.3);
+	border-radius: var(--radius-lg);
 }
 
 /* rejillas */
 .grid-2 {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 20px;
+	gap: var(--space-5);
 }
 
 .grid-3 {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
-	gap: 20px;
+	gap: var(--space-5);
 }
 
 @media (max-width: 900px) {
@@ -213,6 +294,41 @@ section {
 	border: 0;
 }
 
+/* ── entrada del hero: el único momento animado de la página ──
+   Parte de un estado visible y lo anima; si la animación no corre,
+   el contenido ya está en su sitio. */
+@media (prefers-reduced-motion: no-preference) {
+	.enter {
+		animation: enter 760ms var(--ease-out) backwards;
+	}
+
+	.enter-1 {
+		animation-delay: 60ms;
+	}
+	.enter-2 {
+		animation-delay: 140ms;
+	}
+	.enter-3 {
+		animation-delay: 220ms;
+	}
+	.enter-4 {
+		animation-delay: 320ms;
+	}
+}
+
+@keyframes enter {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+		filter: blur(6px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+		filter: none;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	html {
 		scroll-behavior: auto;
@@ -224,10 +340,5 @@ section {
 		animation-duration: 0.01ms !important;
 		animation-iteration-count: 1 !important;
 		transition-duration: 0.01ms !important;
-	}
-
-	.card-hover:hover,
-	.btn-primary:hover {
-		transform: none;
 	}
 }

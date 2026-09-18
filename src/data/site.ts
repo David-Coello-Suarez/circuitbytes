@@ -25,7 +25,7 @@ export const site = {
 	email: "hola@circuitbits.dev",
 	phone: "+593 00 000 0000",
 	phoneHref: "tel:+593000000000",
-	schedule: "Lun a Vie, 9:00 – 18:00",
+	schedule: "Lun a Vie, 9:00 - 18:00",
 	responseTime: "Respuesta en 24 h",
 	available: true,
 } as const;

@@ -90,10 +90,9 @@ import { nav, site } from "../data/site";
 	.mark {
 		width: 26px;
 		height: 26px;
-		border-radius: 7px;
+		border-radius: var(--radius-sm);
 		flex-shrink: 0;
 		background: linear-gradient(140deg, var(--accent), #0e7490);
-		box-shadow: 0 0 18px rgba(34, 211, 238, 0.35);
 	}
 
 	nav ul {
@@ -123,7 +122,7 @@ import { nav, site } from "../data/site";
 		padding: 0;
 		background: transparent;
 		border: 1px solid var(--border);
-		border-radius: var(--radius-sm);
+		border-radius: var(--radius-md);
 		cursor: pointer;
 		position: relative;
 	}
