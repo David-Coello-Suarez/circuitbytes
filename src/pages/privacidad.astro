@@ -1,6 +1,6 @@
 ---
 import LegalLayout from "../layouts/LegalLayout.astro";
-import { profile } from "../data/profile";
+import { company } from "../data/company";
 ---
 
 <LegalLayout title="Política de privacidad" updated="Septiembre de 2026">
@@ -12,20 +12,17 @@ import { profile } from "../data/profile";
 
 	<h2>Responsable del tratamiento</h2>
 	<p>
-		{profile.fullName}, con domicilio profesional en {profile.location} y correo
-		de contacto <a href={`mailto:${profile.email}`}>{profile.email}</a>.
+		{company.legalName}, RUC <code>{company.ruc}</code>, con domicilio en
+		{company.country}. Contacto:
+		<a href={`mailto:${company.email}`}>{company.email}</a>.
 	</p>
 
 	<h2>Qué datos se recogen</h2>
-	<p>
-		Este sitio <strong>no tiene formularios</strong> y no solicita datos
-		personales para navegar. Solo se tratan datos en dos situaciones:
-	</p>
 	<ul>
 		<li>
-			<strong>Cuando escribes por tu cuenta.</strong> Si envías un correo o un
-			mensaje de WhatsApp, se tratan los datos que decidas incluir: nombre,
-			correo, teléfono y el contenido de tu consulta.
+			<strong>Formulario de contacto.</strong> Nombre, empresa, correo,
+			teléfono, tipo de consulta y el mensaje que decidas escribir. Solo los
+			campos marcados como obligatorios son necesarios para responderte.
 		</li>
 		<li>
 			<strong>Estadísticas de uso.</strong> Si aceptas las cookies de analítica,
@@ -36,28 +33,39 @@ import { profile } from "../data/profile";
 
 	<h2>Para qué se usan</h2>
 	<p>
-		Los datos de contacto se usan únicamente para responder tu consulta y, en su
-		caso, gestionar la relación profesional. No se ceden a terceros ni se emplean
-		para enviar comunicaciones comerciales no solicitadas.
+		Los datos del formulario se usan para responder tu consulta, elaborar la
+		propuesta correspondiente y, si avanzamos, gestionar la relación comercial.
+		No se ceden a terceros ni se emplean para comunicaciones comerciales no
+		solicitadas.
+	</p>
+
+	<h2>Quién los procesa</h2>
+	<p>
+		El formulario se tramita a través de un proveedor externo de envío de
+		formularios, que actúa como encargado del tratamiento y no utiliza los datos
+		para fines propios. La analítica corre a cargo de Google, y solo si has dado
+		tu consentimiento.
 	</p>
 
 	<h2>Cuánto tiempo se conservan</h2>
 	<p>
-		La correspondencia se conserva mientras dure la relación profesional y el
-		tiempo necesario para atender responsabilidades legales derivadas de ella.
+		La correspondencia comercial se conserva mientras dure la relación y durante
+		el plazo necesario para atender las obligaciones legales y tributarias
+		derivadas de ella.
 	</p>
 
 	<h2>Tus derechos</h2>
 	<p>
-		Puedes solicitar el acceso, la rectificación o la eliminación de tus datos, así
-		como oponerte a su tratamiento, escribiendo a
-		<a href={`mailto:${profile.email}`}>{profile.email}</a>.
+		Puedes solicitar acceso, rectificación o eliminación de tus datos, así como
+		oponerte a su tratamiento, escribiendo a
+		<a href={`mailto:${company.email}`}>{company.email}</a>. Responderemos en un
+		plazo razonable.
 	</p>
 
-	<h2>Terceros</h2>
+	<h2>Confidencialidad de proyectos</h2>
 	<p>
-		Google Analytics es el único servicio de terceros que puede tratar datos, y
-		solo previo consentimiento. Los detalles están en la
-		<a href="/cookies">política de cookies</a>.
+		La información técnica que nos compartas para cotizar un proyecto se trata
+		como confidencial. Firmamos acuerdos de confidencialidad cuando se solicita,
+		antes de acceder a cualquier sistema.
 	</p>
 </LegalLayout>

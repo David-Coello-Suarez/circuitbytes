@@ -1,0 +1,151 @@
+---
+import { benefits, pricing } from "../data/content";
+---
+
+<section id="modelos">
+	<div class="wrap">
+		<div class="section-head">
+			<h2>Modelos de colaboración</h2>
+			<p>
+				Elegimos juntos el que encaje con el proyecto. Todos parten de una
+				propuesta escrita.
+			</p>
+		</div>
+
+		<ul class="models">
+			{
+				pricing.map((model) => (
+					<li class:list={["card", "rise", { featured: model.highlight }]}>
+						<span class="fit">{model.fit}</span>
+						<h3>{model.name}</h3>
+						<p>{model.description}</p>
+					</li>
+				))
+			}
+		</ul>
+
+		<div class="closing">
+			<div>
+				<h3 class="benefits-title">Lo que incluye trabajar con nosotros</h3>
+				<ul class="benefits">
+					{benefits.map((item) => <li>{item}</li>)}
+				</ul>
+			</div>
+
+			<a class="btn btn-primary" href="#contacto">
+				Solicita una cotización personalizada
+			</a>
+		</div>
+	</div>
+</section>
+
+<style>
+	section {
+		padding-block: 5rem;
+		background: var(--color-canvas-warm);
+		border-block: 1px solid var(--color-rule);
+	}
+
+	.models {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 1rem;
+	}
+
+	.models > li {
+		padding: 1.5rem;
+		display: grid;
+		align-content: start;
+		gap: 0.5rem;
+	}
+
+	/* el modelo destacado se marca con el borde, no con color de fondo */
+	.featured {
+		border-color: var(--color-ink-strong);
+	}
+
+	.fit {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: var(--color-ink-soft);
+	}
+
+	h3 {
+		font-size: 1rem;
+		margin: 0;
+	}
+
+	.models p {
+		font-size: 0.9rem;
+		color: var(--color-ink-soft);
+		margin: 0;
+	}
+
+	.closing {
+		margin-top: 3rem;
+		padding-top: 2.5rem;
+		border-top: 1px solid var(--color-rule);
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 2.5rem;
+	}
+
+	.benefits-title {
+		font-size: 0.95rem;
+		color: var(--color-ink-soft);
+		font-weight: 500;
+		margin: 0 0 1rem;
+	}
+
+	.benefits {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.5rem 2rem;
+	}
+
+	.benefits li {
+		font-size: 0.9rem;
+		padding-left: 1rem;
+		position: relative;
+	}
+
+	.benefits li::before {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 0.7em;
+		width: 5px;
+		height: 1px;
+		background: var(--color-ink-soft);
+	}
+
+	@media (max-width: 1000px) {
+		.models {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+
+	@media (max-width: 860px) {
+		.closing {
+			grid-template-columns: 1fr;
+			align-items: start;
+		}
+
+		.benefits {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.models {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

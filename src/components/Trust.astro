@@ -1,0 +1,61 @@
+---
+import { trust } from "../data/company";
+---
+
+<section class="trust" aria-label="Respaldo de la empresa">
+	<div class="wrap">
+		<dl>
+			{
+				trust.map((item) => (
+					<div class="rise">
+						<dt>{item.label}</dt>
+						<dd>{item.detail}</dd>
+					</div>
+				))
+			}
+		</dl>
+	</div>
+</section>
+
+<style>
+	.trust {
+		background: var(--color-canvas-warm);
+		border-block: 1px solid var(--color-rule);
+		padding-block: 2.5rem;
+	}
+
+	dl {
+		margin: 0;
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 2rem;
+	}
+
+	dt {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		letter-spacing: 0.02em;
+		color: var(--color-ink-strong);
+		margin-bottom: 0.5rem;
+	}
+
+	dd {
+		margin: 0;
+		font-size: 0.875rem;
+		color: var(--color-ink-soft);
+		max-width: 32ch;
+	}
+
+	@media (max-width: 900px) {
+		dl {
+			grid-template-columns: 1fr 1fr;
+			gap: 1.75rem;
+		}
+	}
+
+	@media (max-width: 560px) {
+		dl {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

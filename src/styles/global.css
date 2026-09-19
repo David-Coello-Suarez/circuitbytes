@@ -1,41 +1,52 @@
 @import "tailwindcss";
 
-@import "@fontsource-variable/geist";
-@import "@fontsource-variable/geist-mono";
+@import "@fontsource-variable/newsreader";
+@import "@fontsource-variable/instrument-sans";
+@import "@fontsource-variable/jetbrains-mono";
 
 /* ─────────────────────────────────────────────
-   David Coello - sistema de diseño
-   Dark del brief, rigor estructural del minimalismo:
-   superficies planas, filete de 1px como único separador,
-   sombras casi inexistentes, cero gradientes decorativos.
+   CircuitByte S.A.S. - sistema de diseño
+   Minimalismo editorial: monocromo cálido, contraste tipográfico,
+   superficies planas y un filete de 1px como único separador.
+   El color es un recurso escaso: cada pastel identifica una línea
+   de negocio, no adorna.
    ───────────────────────────────────────────── */
 
 @theme {
-	/* color: un solo acento de marca (cian). El verde es estado, no marca. */
-	--color-canvas: #0b0d12;
-	--color-surface: #12151d;
-	--color-line: #1f2530;
-	--color-line-strong: #2b3342;
-	--color-ink: #e6e9ef;
-	/* 6.4:1 sobre canvas */
-	--color-ink-muted: #8b94a7;
-	/* 5.1:1 sobre canvas: mínimo AA para texto pequeño */
-	--color-ink-faint: #7a8396;
-	--color-accent: #22d3ee;
-	--color-accent-ink: #06222a;
-	--color-ok: #34d399;
+	/* ── lienzo y superficies ── */
+	--color-canvas: #fbfbfa;
+	--color-canvas-warm: #f7f6f3;
+	--color-surface: #ffffff;
+	--color-rule: #eaeaea;
 
-	--font-sans: "Geist Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
-	--font-mono: "Geist Mono Variable", ui-monospace, Consolas, monospace;
+	/* ── texto ──
+	   Nunca negro puro. El gris secundario del protocolo original
+	   (#787774) se queda en 4,32:1 y no llega a AA, así que se
+	   oscurece hasta 5:1 conservando el sesgo cálido. */
+	--color-ink: #2f3437;
+	--color-ink-strong: #111111;
+	--color-ink-soft: #6e6d6a;
 
-	/* radios: escala corta y crisp, sin pill en contenedores grandes */
-	--radius-sm: 6px;
-	--radius-md: 10px;
-	--radius-lg: 14px;
+	/* ── acentos pastel, uno por línea de negocio ── */
+	--color-soft-blue: #e1f3fe;
+	--color-soft-blue-ink: #1f6c9f;
+	--color-soft-green: #edf3ec;
+	--color-soft-green-ink: #346538;
+	--color-soft-sand: #fbf3db;
+	--color-soft-sand-ink: #956400;
 
-	/* profundidad: desplazamiento y difuminado, nunca halo de color */
-	--shadow-subtle: 0 1px 2px rgb(0 0 0 / 0.4);
-	--shadow-lift: 0 8px 24px -14px rgb(0 0 0 / 0.75);
+	/* ── tipografía ── */
+	--font-display: "Newsreader Variable", "Lyon Text", Georgia, serif;
+	--font-sans: "Instrument Sans Variable", "Helvetica Neue", system-ui, sans-serif;
+	--font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+
+	/* ── forma: radios crispados, nunca píldora en contenedores ── */
+	--radius-xs: 4px;
+	--radius-sm: 8px;
+	--radius-md: 12px;
+
+	/* ── profundidad casi inexistente ── */
+	--shadow-hover: 0 2px 8px rgb(0 0 0 / 0.04);
 
 	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -43,10 +54,8 @@
 @layer base {
 	html {
 		scroll-behavior: smooth;
-		/* el header sticky no debe tapar el título al navegar por anclas */
 		scroll-padding-top: 6rem;
-		/* el navegador ya sabe que el documento es oscuro */
-		color-scheme: dark;
+		color-scheme: light;
 	}
 
 	body {
@@ -59,18 +68,23 @@
 		overflow-x: hidden;
 	}
 
+	/* el contraste tipográfico es el que hace el trabajo editorial */
 	h1,
-	h2,
-	h3 {
-		line-height: 1.12;
-		letter-spacing: -0.032em;
-		font-weight: 600;
+	h2 {
+		font-family: var(--font-display);
+		font-weight: 500;
+		line-height: 1.1;
+		letter-spacing: -0.025em;
+		color: var(--color-ink-strong);
 		text-wrap: balance;
 	}
 
 	h3 {
-		line-height: 1.25;
-		letter-spacing: -0.02em;
+		font-family: var(--font-sans);
+		font-weight: 600;
+		line-height: 1.3;
+		letter-spacing: -0.012em;
+		color: var(--color-ink-strong);
 	}
 
 	p {
@@ -78,19 +92,25 @@
 	}
 
 	a {
+		color: inherit;
 		text-underline-offset: 0.2em;
 		text-decoration-thickness: 1px;
 	}
 
-	/* superficies del navegador: sin esto la página se ve ensamblada, no construida */
+	img {
+		display: block;
+		max-width: 100%;
+	}
+
+	/* superficies que el navegador pinta por su cuenta */
 	::selection {
-		background: var(--color-accent);
-		color: var(--color-accent-ink);
+		background: var(--color-soft-blue);
+		color: var(--color-soft-blue-ink);
 	}
 
 	:root {
-		caret-color: var(--color-accent);
-		scrollbar-color: var(--color-line-strong) var(--color-canvas);
+		caret-color: var(--color-ink-strong);
+		scrollbar-color: #d4d4d1 var(--color-canvas);
 		scrollbar-width: thin;
 	}
 
@@ -104,40 +124,79 @@
 	}
 
 	::-webkit-scrollbar-thumb {
-		background: var(--color-line-strong);
+		background: #d4d4d1;
 		border-radius: 999px;
 		border: 2px solid var(--color-canvas);
 	}
 
 	:focus-visible {
-		outline: 2px solid var(--color-accent);
+		outline: 2px solid var(--color-ink-strong);
 		outline-offset: 3px;
-		border-radius: var(--radius-sm);
+		border-radius: var(--radius-xs);
 	}
 }
 
 @layer components {
 	.wrap {
 		width: 100%;
-		max-width: 76rem;
+		max-width: 72rem;
 		margin-inline: auto;
 		padding-inline: 1.5rem;
 	}
 
-	/* los números se alinean en columna y no bailan */
+	/* medida de lectura contenida para bloques de texto largo */
+	.measure {
+		max-width: 64ch;
+	}
+
 	.tabular {
 		font-variant-numeric: tabular-nums;
 	}
 
+	/* ── etiquetas: versalitas, tracking amplio, pastel ── */
+	.tag {
+		display: inline-flex;
+		align-items: center;
+		border-radius: 999px;
+		padding: 0.25rem 0.625rem;
+		font-family: var(--font-sans);
+		font-size: 0.6875rem;
+		font-weight: 500;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		white-space: nowrap;
+	}
+
+	.tag-blue {
+		background: var(--color-soft-blue);
+		color: var(--color-soft-blue-ink);
+	}
+
+	.tag-green {
+		background: var(--color-soft-green);
+		color: var(--color-soft-green-ink);
+	}
+
+	.tag-sand {
+		background: var(--color-soft-sand);
+		color: var(--color-soft-sand-ink);
+	}
+
+	.tag-plain {
+		border: 1px solid var(--color-rule);
+		color: var(--color-ink-soft);
+	}
+
+	/* ── botones: sólidos, sin sombra, radio pequeño ── */
 	.btn {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		gap: 0.5rem;
-		padding: 0.7rem 1.35rem;
-		border-radius: var(--radius-md);
-		border: 1px solid var(--color-line);
-		font-size: 0.925rem;
+		padding: 0.75rem 1.25rem;
+		border-radius: var(--radius-xs);
+		border: 1px solid transparent;
+		font-size: 0.9375rem;
 		font-weight: 500;
 		text-decoration: none;
 		white-space: nowrap;
@@ -146,65 +205,97 @@
 			background-color 200ms var(--ease-out),
 			border-color 200ms var(--ease-out),
 			color 200ms var(--ease-out),
-			transform 140ms var(--ease-out);
+			transform 120ms var(--ease-out);
 	}
 
 	.btn-primary {
-		background: var(--color-accent);
-		color: var(--color-accent-ink);
-		border-color: var(--color-accent);
-		box-shadow: var(--shadow-subtle);
+		background: var(--color-ink-strong);
+		color: var(--color-surface);
 	}
 
 	.btn-primary:hover {
-		background: color-mix(in oklab, var(--color-accent) 88%, white);
-		border-color: color-mix(in oklab, var(--color-accent) 88%, white);
+		background: #333333;
 	}
 
-	.btn-ghost:hover {
-		border-color: var(--color-line-strong);
+	.btn-secondary {
 		background: var(--color-surface);
+		border-color: var(--color-rule);
+		color: var(--color-ink-strong);
 	}
 
-	/* empuje físico al pulsar */
+	.btn-secondary:hover {
+		background: var(--color-canvas-warm);
+	}
+
 	.btn:active {
 		transform: scale(0.98);
 	}
 
-	/* superficie plana: filete de 1px, sin sombra pesada */
-	.panel {
+	/* ── tarjeta: filete de 1px, plana ── */
+	.card {
 		background: var(--color-surface);
-		border: 1px solid var(--color-line);
-		border-radius: var(--radius-lg);
+		border: 1px solid var(--color-rule);
+		border-radius: var(--radius-md);
+		transition:
+			box-shadow 200ms var(--ease-out),
+			border-color 200ms var(--ease-out);
+	}
+
+	.card-hover:hover {
+		box-shadow: var(--shadow-hover);
+	}
+
+	/* encabezado de sección */
+	.section-head {
+		max-width: 46ch;
+		margin-bottom: 3.5rem;
+	}
+
+	.section-head h2 {
+		font-size: clamp(1.9rem, 4vw, 2.75rem);
+		margin: 0 0 1rem;
+	}
+
+	.section-head p {
+		color: var(--color-ink-soft);
+		font-size: 1.0625rem;
+		margin: 0;
 	}
 }
 
-/* ── motion ──
-   Un solo momento animado: la entrada del hero, escalonada. No hay
-   revelado por scroll: ninguna parte del contenido depende de JavaScript
-   para ser visible, y la página no repite la misma entrada en cada sección.
-   La animación arranca desde el estado final, así que si no llega a
-   ejecutarse el contenido ya está colocado. */
+/* ─────────────────────────────────────────────
+   Movimiento
+
+   Entrada al aparecer en pantalla resuelta con animaciones de scroll
+   nativas de CSS, sin JavaScript. Si el navegador no las soporta, el
+   contenido queda visible: ningún texto depende de un script para verse.
+   ───────────────────────────────────────────── */
 @media (prefers-reduced-motion: no-preference) {
-	.enter {
-		animation: enter 700ms var(--ease-out) backwards;
+	@supports (animation-timeline: view()) {
+		.rise {
+			animation: rise linear both;
+			animation-timeline: view();
+			animation-range: entry 0% cover 22%;
+		}
 	}
 
-	.enter-1 {
-		animation-delay: 60ms;
+	/* la entrada del hero no espera al scroll: ya está en pantalla */
+	.hero-in {
+		animation: rise 700ms var(--ease-out) backwards;
 	}
-	.enter-2 {
-		animation-delay: 140ms;
+
+	.hero-in-2 {
+		animation-delay: 90ms;
 	}
-	.enter-3 {
-		animation-delay: 220ms;
+	.hero-in-3 {
+		animation-delay: 180ms;
 	}
-	.enter-4 {
-		animation-delay: 300ms;
+	.hero-in-4 {
+		animation-delay: 270ms;
 	}
 }
 
-@keyframes enter {
+@keyframes rise {
 	from {
 		opacity: 0;
 		transform: translateY(12px);

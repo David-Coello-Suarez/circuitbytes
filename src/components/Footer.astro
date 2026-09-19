@@ -1,5 +1,5 @@
 ---
-import { profile } from "../data/profile";
+import { company } from "../data/company";
 
 const year = new Date().getFullYear();
 
@@ -12,7 +12,13 @@ const legal = [
 
 <footer>
 	<div class="wrap grid">
-		<p class="name">{profile.fullName}</p>
+		<div class="brand">
+			<span class="mark" aria-hidden="true"></span>
+			<div>
+				<p class="name">{company.legalName}</p>
+				<p class="tagline">{company.tagline}</p>
+			</div>
+		</div>
 
 		<nav aria-label="Legal">
 			<ul>
@@ -20,20 +26,25 @@ const legal = [
 			</ul>
 		</nav>
 
-		<nav aria-label="Perfiles profesionales">
+		<nav aria-label="Redes">
 			<ul>
-				<li><a href={profile.linkedin}>LinkedIn</a></li>
-				<li><a href={profile.github}>GitHub</a></li>
+				{/* TODO: enlaces reales de redes sociales */}
+				<li><a href={company.linkedin}>LinkedIn</a></li>
+				<li><a href={company.whatsapp}>WhatsApp</a></li>
 			</ul>
 		</nav>
 
-		<p class="copy">&copy; {year}. Todos los derechos reservados.</p>
+		<div class="meta">
+			<p class="tabular">RUC {company.ruc}</p>
+			<p>&copy; {year} {company.legalName}. {company.country}.</p>
+		</div>
 	</div>
 </footer>
 
 <style>
 	footer {
-		border-top: 1px solid var(--color-line);
+		border-top: 1px solid var(--color-rule);
+		background: var(--color-canvas-warm);
 		padding-block: 2.5rem;
 	}
 
@@ -41,43 +52,76 @@ const legal = [
 		display: grid;
 		grid-template-columns: repeat(4, auto);
 		justify-content: space-between;
+		gap: 2rem;
+		align-items: start;
+	}
+
+	.brand {
+		display: flex;
 		align-items: center;
-		gap: 1.25rem 2rem;
-		font-size: 0.85rem;
-		color: var(--color-ink-muted);
+		gap: 0.625rem;
+	}
+
+	.mark {
+		width: 1.5rem;
+		height: 1.5rem;
+		flex-shrink: 0;
+		border-radius: var(--radius-xs);
+		background: var(--color-ink-strong);
 	}
 
 	.name {
 		margin: 0;
-		color: var(--color-ink);
-		font-weight: 500;
+		font-weight: 600;
+		font-size: 0.9375rem;
+		color: var(--color-ink-strong);
 	}
 
-	.copy {
+	.tagline {
 		margin: 0;
+		font-size: 0.8rem;
+		color: var(--color-ink-soft);
 	}
 
 	nav ul {
-		display: flex;
-		gap: 1.25rem;
 		list-style: none;
 		margin: 0;
 		padding: 0;
+		display: grid;
+		gap: 0.5rem;
 	}
 
 	nav a {
+		font-size: 0.85rem;
+		color: var(--color-ink-soft);
 		text-decoration: none;
-		transition: color 180ms var(--ease-out);
 	}
 
 	nav a:hover {
-		color: var(--color-accent);
+		color: var(--color-ink-strong);
+	}
+
+	.meta p {
+		margin: 0;
+		font-size: 0.8rem;
+		color: var(--color-ink-soft);
+	}
+
+	.meta p:first-child {
+		font-family: var(--font-mono);
+		margin-bottom: 0.35rem;
 	}
 
 	@media (max-width: 860px) {
 		.grid {
-			grid-template-columns: 1fr;
+			grid-template-columns: 1fr 1fr;
 			justify-content: start;
+		}
+	}
+
+	@media (max-width: 520px) {
+		.grid {
+			grid-template-columns: 1fr;
 		}
 	}
 </style>

@@ -1,59 +1,55 @@
 /**
- * Servicios. `span` controla el ancho de la celda en el bento asimétrico:
- * las seis no ocupan lo mismo, para que la sección no lea como una rejilla
- * de tarjetas idénticas.
+ * Línea 1: desarrollo de software a medida.
+ * `span` reparte el ancho en el bento para que las celdas no midan lo mismo.
  */
 
 export interface Service {
-	/** Icono del set Phosphor (@iconify-json/ph). */
-	icon: string;
 	title: string;
 	description: string;
-	/** Columnas que ocupa en la rejilla de 6 de escritorio. */
 	span: 2 | 3 | 4;
 }
 
 export const services: Service[] = [
 	{
-		icon: "ph:layout-bold",
-		title: "Desarrollo front-end",
+		title: "Desarrollo web y aplicaciones a medida",
 		description:
-			"Interfaces en React, TypeScript y Next.js, con Redux y React Query para manejar estado y datos sin que la aplicación se vuelva frágil.",
+			"Plataformas de gestión, portales y aplicaciones internas construidas alrededor de tu operación, no de una plantilla.",
 		span: 4,
 	},
 	{
-		icon: "ph:plugs-connected-bold",
-		title: "Back-end y APIs",
+		title: "IA aplicada",
 		description:
-			"APIs REST en Node.js, NestJS y PHP con CodeIgniter, diseñadas para integrarse y crecer.",
+			"Automatización de tareas repetitivas, análisis de información e integración de modelos donde aportan valor real.",
 		span: 2,
 	},
 	{
-		icon: "ph:arrows-left-right-bold",
-		title: "Integración de sistemas",
+		title: "Integración con SAP y otros ERP",
 		description:
-			"Conexión con SAP Business One y Web Services para automatizar lo que hoy se hace a mano.",
+			"Conectamos tu ERP con el resto de sistemas para que los datos dejen de pasarse a mano.",
+		span: 3,
+	},
+	{
+		title: "APIs REST y seguridad",
+		description:
+			"Servicios documentados con autenticación JWT y control de acceso por rol.",
+		span: 3,
+	},
+	{
+		title: "Docker y despliegue",
+		description:
+			"Entornos reproducibles: lo que funciona en desarrollo funciona en producción.",
 		span: 2,
 	},
 	{
-		icon: "ph:shield-check-bold",
-		title: "Seguridad",
+		title: "Modernización de sistemas heredados",
 		description:
-			"Autenticación con JWT y buenas prácticas para proteger el acceso a tus datos.",
-		span: 2,
-	},
-	{
-		icon: "ph:stack-bold",
-		title: "DevOps y despliegue",
-		description:
-			"Docker, CentOS 7 y CI/CD para que desplegar deje de ser un evento de riesgo.",
-		span: 2,
-	},
-	{
-		icon: "ph:wrench-bold",
-		title: "Optimización y soporte",
-		description:
-			"Refactorización de sistemas heredados, reducción de deuda técnica y atención de incidencias.",
+			"Migramos por fases ese código que sostiene la operación y que nadie quiere tocar, sin detenerla.",
 		span: 4,
+	},
+	{
+		title: "Mantenimiento y soporte continuo",
+		description:
+			"Acompañamiento después de la entrega: incidencias, mejoras y evolución del sistema.",
+		span: 6,
 	},
 ];

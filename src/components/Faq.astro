@@ -1,12 +1,10 @@
 ---
-import { faq } from "../data/faq";
+import { faq } from "../data/content";
 ---
 
 <section id="faq">
-	<div class="wrap">
-		<div class="head">
-			<h2>Preguntas frecuentes</h2>
-		</div>
+	<div class="wrap grid">
+		<h2>Preguntas frecuentes</h2>
 
 		<div class="list">
 			{
@@ -29,23 +27,25 @@ import { faq } from "../data/faq";
 		padding-block: 5rem;
 	}
 
-	.head {
-		margin-bottom: 2.5rem;
+	.grid {
+		display: grid;
+		grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+		gap: 2rem 4rem;
+		align-items: start;
 	}
 
-	.head h2 {
-		font-size: clamp(1.75rem, 3.6vw, 2.4rem);
+	h2 {
+		font-size: clamp(1.9rem, 4vw, 2.75rem);
 		margin: 0;
 	}
 
-	/* sin contenedores: los items se separan solo con un filete */
+	/* sin cajas: los items se separan solo con un filete */
 	.list {
-		max-width: 52rem;
-		border-top: 1px solid var(--color-line);
+		border-top: 1px solid var(--color-rule);
 	}
 
 	details {
-		border-bottom: 1px solid var(--color-line);
+		border-bottom: 1px solid var(--color-rule);
 	}
 
 	summary {
@@ -53,27 +53,23 @@ import { faq } from "../data/faq";
 		align-items: center;
 		justify-content: space-between;
 		gap: 1.5rem;
-		padding-block: 1.25rem;
+		padding-block: 1.125rem;
 		cursor: pointer;
 		list-style: none;
 		font-size: 1rem;
 		font-weight: 500;
-		transition: color 180ms var(--ease-out);
+		color: var(--color-ink-strong);
 	}
 
 	summary::-webkit-details-marker {
 		display: none;
 	}
 
-	summary:hover {
-		color: var(--color-accent);
-	}
-
-	/* signo + / - dibujado con dos trazos, no con tipografía */
+	/* signo + / - dibujado con dos trazos */
 	.sign {
 		position: relative;
-		width: 12px;
-		height: 12px;
+		width: 11px;
+		height: 11px;
 		flex-shrink: 0;
 	}
 
@@ -81,14 +77,14 @@ import { faq } from "../data/faq";
 	.sign::after {
 		content: "";
 		position: absolute;
-		background: var(--color-accent);
+		background: var(--color-ink-strong);
 		transition: transform 200ms var(--ease-out);
 	}
 
 	.sign::before {
 		left: 0;
 		top: 50%;
-		width: 12px;
+		width: 11px;
 		height: 1.5px;
 		transform: translateY(-50%);
 	}
@@ -97,7 +93,7 @@ import { faq } from "../data/faq";
 		left: 50%;
 		top: 0;
 		width: 1.5px;
-		height: 12px;
+		height: 11px;
 		transform: translateX(-50%);
 	}
 
@@ -107,9 +103,15 @@ import { faq } from "../data/faq";
 
 	details p {
 		margin: 0;
-		padding-bottom: 1.5rem;
-		color: var(--color-ink-muted);
-		font-size: 0.95rem;
+		padding-bottom: 1.375rem;
+		color: var(--color-ink-soft);
+		font-size: 0.9375rem;
 		max-width: 68ch;
+	}
+
+	@media (max-width: 860px) {
+		.grid {
+			grid-template-columns: 1fr;
+		}
 	}
 </style>

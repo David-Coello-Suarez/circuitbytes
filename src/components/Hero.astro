@@ -1,169 +1,95 @@
 ---
-import { heroBadges, profile } from "../data/profile";
-
-const initials = "DC";
+import { company, heroTech } from "../data/company";
 ---
 
 <section class="hero" id="top">
-	<div class="wrap grid">
-		<div>
-			<h1 class="enter enter-1">Desarrollo web full-stack para escalar tu negocio</h1>
+	<div class="wrap">
+		<h1 class="hero-in">
+			Software a medida con IA y tecnología de última generación para tu
+			empresa.
+		</h1>
 
-			<p class="lead enter enter-2">
-				6 años de experiencia creando aplicaciones web, APIs REST e
-				integraciones SAP con React, TypeScript, Node.js y PHP.
+		<div class="foot">
+			<p class="lead hero-in hero-in-2">
+				Desarrollamos, integramos y modernizamos tus sistemas. Del front-end a
+				la integración con tu ERP, con despliegue, seguridad y mantenimiento
+				incluidos.
 			</p>
 
-			<div class="cta enter enter-3">
-				<a class="btn btn-primary" href="#contacto">Agendar llamada</a>
-				<a class="btn btn-ghost" href="#casos">Ver casos de éxito</a>
+			<div class="cta hero-in hero-in-3">
+				<a class="btn btn-primary" href="#contacto">Cotiza tu proyecto</a>
+				<a class="btn btn-secondary" href="#productos">Ver productos</a>
 			</div>
-
-			<ul class="badges" aria-label="Tecnologías principales">
-				{heroBadges.map((badge) => <li>{badge}</li>)}
-			</ul>
 		</div>
 
-		<div class="portrait enter enter-4">
-			{
-				/* TODO: al añadir public/david-coello.jpg, sustituir el círculo de
-				   iniciales por <img src={profile.photo} width="280" height="280"
-				   alt={`Retrato de ${profile.fullName}`} /> */
-			}
-			{
-				profile.photo ? (
-					<img
-						src={profile.photo}
-						width="280"
-						height="280"
-						alt={`Retrato de ${profile.fullName}`}
-					/>
-				) : (
-					<div class="placeholder" role="img" aria-label={profile.fullName}>
-						<span aria-hidden="true">{initials}</span>
-					</div>
-				)
-			}
-			<p class="location">
-				<span class="dot" aria-hidden="true"></span>
-				{profile.location}
-			</p>
-		</div>
+		<ul class="tech hero-in hero-in-4" aria-label="Tecnologías que utilizamos">
+			{heroTech.map((item) => <li class="tag tag-plain">{item}</li>)}
+		</ul>
 	</div>
 </section>
 
 <style>
 	.hero {
-		padding-block: 6rem 4.5rem;
-	}
-
-	.grid {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) auto;
-		align-items: center;
-		gap: 4rem;
+		padding-block: 6rem 4rem;
+		/* luz difusa, no gradiente decorativo: da profundidad sin romper el plano */
+		background:
+			radial-gradient(
+				60rem 32rem at 82% -8%,
+				rgb(31 108 159 / 0.05),
+				transparent 70%
+			),
+			var(--color-canvas);
 	}
 
 	h1 {
-		font-size: clamp(2.1rem, 5vw, 3.5rem);
-		max-width: 17ch;
-		margin: 0 0 1.5rem;
+		font-size: clamp(2.4rem, 6vw, 4.25rem);
+		max-width: 18ch;
+		margin: 0 0 3rem;
+	}
+
+	.foot {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: end;
+		gap: 2rem 4rem;
+		padding-top: 2rem;
+		border-top: 1px solid var(--color-rule);
 	}
 
 	.lead {
-		color: var(--color-ink-muted);
-		font-size: 1.075rem;
+		font-size: 1.0625rem;
+		color: var(--color-ink-soft);
 		max-width: 52ch;
 		margin: 0;
 	}
 
 	.cta {
 		display: flex;
-		gap: 0.8rem;
+		gap: 0.75rem;
 		flex-wrap: wrap;
-		margin-top: 2rem;
 	}
 
-	.badges {
+	.tech {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.5rem;
 		list-style: none;
 		margin: 2.5rem 0 0;
-		padding: 2rem 0 0;
-		border-top: 1px solid var(--color-line);
+		padding: 0;
 	}
 
-	.badges li {
-		font-size: 0.78rem;
-		color: var(--color-ink-muted);
-		border: 1px solid var(--color-line);
-		border-radius: var(--radius-sm);
-		padding: 0.3rem 0.65rem;
-	}
-
-	.portrait {
-		display: grid;
-		justify-items: center;
-		gap: 1rem;
-	}
-
-	.portrait img,
-	.placeholder {
-		width: 17.5rem;
-		height: 17.5rem;
-		border-radius: 999px;
-		border: 1px solid var(--color-line-strong);
-		object-fit: cover;
-	}
-
-	.placeholder {
-		display: grid;
-		place-items: center;
-		background: var(--color-surface);
-		color: var(--color-ink-muted);
-		font-size: 3rem;
-		font-weight: 500;
-		letter-spacing: -0.03em;
-	}
-
-	.location {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		font-size: 0.85rem;
-		color: var(--color-ink-muted);
-		margin: 0;
-	}
-
-	/* verde: estado real de disponibilidad, no color de marca */
-	.dot {
-		width: 7px;
-		height: 7px;
-		border-radius: 999px;
-		background: var(--color-ok);
-		flex-shrink: 0;
-	}
-
-	@media (max-width: 900px) {
+	@media (max-width: 860px) {
 		.hero {
-			padding-block: 4rem 3rem;
+			padding-block: 3.5rem 3rem;
 		}
 
-		.grid {
+		h1 {
+			margin-bottom: 2rem;
+		}
+
+		.foot {
 			grid-template-columns: 1fr;
-			gap: 3rem;
-		}
-
-		.portrait {
-			justify-items: start;
-		}
-
-		.portrait img,
-		.placeholder {
-			width: 11rem;
-			height: 11rem;
-			font-size: 2.25rem;
+			align-items: start;
 		}
 	}
 </style>

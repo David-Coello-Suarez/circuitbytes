@@ -1,27 +1,43 @@
 ---
-import { profile } from "../data/profile";
+import { company } from "../data/company";
 ---
 
-<section id="sobre-mi">
+<section id="nosotros">
 	<div class="wrap grid">
-		<h2>Sobre mí</h2>
+		<h2>Sobre nosotros</h2>
 
 		<div class="body">
-			<p>
-				Soy David Coello, desarrollador full-stack en Guayaquil, Ecuador. Me
-				especializo en React, TypeScript, Node.js y PHP.
+			<p class="lead">
+				Somos {company.legalName}, empresa ecuatoriana de soluciones
+				tecnológicas.
 			</p>
 			<p>
-				He trabajado en integración con SAP, seguridad con JWT, Docker y
-				optimización de sistemas heredados: ese código que nadie quiere tocar y
-				que sostiene la operación todos los días.
+				Desarrollamos software a medida con inteligencia artificial, integramos
+				sistemas empresariales como SAP, aseguramos la autenticación con JWT,
+				desplegamos con Docker y modernizamos los sistemas heredados que
+				sostienen tu operación. También comercializamos productos de tecnología
+				de última generación.
 			</p>
 			<p>
-				Busco proyectos donde pueda aportar arquitectura escalable y resultados
-				medibles, no solo entregar tareas.
+				Trabajamos con arquitectura escalable y resultados medibles: cada
+				proyecto se evalúa por lo que cambia en la operación, no por la cantidad
+				de funcionalidades entregadas.
 			</p>
 
-			<a class="btn btn-ghost" href={profile.linkedin}>Ver perfil en LinkedIn</a>
+			<dl class="legal">
+				<div>
+					<dt>Razón social</dt>
+					<dd>{company.legalName}</dd>
+				</div>
+				<div>
+					<dt>RUC</dt>
+					<dd class="tabular">{company.ruc}</dd>
+				</div>
+				<div>
+					<dt>Ubicación</dt>
+					<dd>{company.country}</dd>
+				</div>
+			</dl>
 		</div>
 	</div>
 </section>
@@ -33,34 +49,62 @@ import { profile } from "../data/profile";
 
 	.grid {
 		display: grid;
-		grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+		grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
 		gap: 2rem 4rem;
 		align-items: start;
 	}
 
 	h2 {
-		font-size: clamp(1.75rem, 3.6vw, 2.4rem);
+		font-size: clamp(1.9rem, 4vw, 2.75rem);
 		margin: 0;
 	}
 
-	.body p {
-		color: var(--color-ink-muted);
-		font-size: 1.02rem;
-		max-width: 62ch;
+	.lead {
+		font-family: var(--font-display);
+		font-size: 1.35rem;
+		line-height: 1.4;
+		letter-spacing: -0.02em;
+		color: var(--color-ink-strong);
+		margin: 0 0 1.25rem;
+	}
+
+	.body p:not(.lead) {
+		color: var(--color-ink-soft);
+		margin: 0 0 1.125rem;
+		max-width: 64ch;
+	}
+
+	.legal {
+		margin: 2rem 0 0;
+		display: grid;
+		grid-template-columns: repeat(3, auto);
+		justify-content: start;
+		gap: 2.5rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--color-rule);
+	}
+
+	dt {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: var(--color-ink-soft);
+		margin-bottom: 0.25rem;
+	}
+
+	dd {
 		margin: 0;
-	}
-
-	.body p + p {
-		margin-top: 1.25rem;
-	}
-
-	.body .btn {
-		margin-top: 2rem;
+		font-size: 0.9rem;
+		color: var(--color-ink-strong);
 	}
 
 	@media (max-width: 860px) {
 		.grid {
 			grid-template-columns: 1fr;
+		}
+
+		.legal {
+			grid-template-columns: 1fr;
+			gap: 1rem;
 		}
 	}
 </style>

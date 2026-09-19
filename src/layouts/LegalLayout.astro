@@ -1,7 +1,7 @@
 ---
 import Layout from "./Layout.astro";
 import Footer from "../components/Footer.astro";
-import { profile } from "../data/profile";
+import { company } from "../data/company";
 
 interface Props {
 	title: string;
@@ -11,7 +11,7 @@ interface Props {
 const { title, updated } = Astro.props;
 ---
 
-<Layout title={`${title} | ${profile.name}`} description={title}>
+<Layout title={`${title} | ${company.legalName}`} description={title}>
 	<div class="wrap page">
 		<a class="back" href="/">Volver al inicio</a>
 
@@ -28,41 +28,45 @@ const { title, updated } = Astro.props;
 
 <style>
 	.page {
-		max-width: 48rem;
-		padding-block: 4rem 5rem;
+		max-width: 46rem;
+		padding-block: 3.5rem 5rem;
 	}
 
 	.back {
 		display: inline-block;
 		font-size: 0.85rem;
-		color: var(--color-ink-muted);
+		color: var(--color-ink-soft);
 		text-decoration: none;
 		margin-bottom: 2.5rem;
 	}
 
 	.back:hover {
-		color: var(--color-accent);
+		color: var(--color-ink-strong);
 	}
 
 	h1 {
 		font-size: clamp(1.9rem, 4vw, 2.6rem);
-		margin: 0 0 0.75rem;
+		margin: 0 0 0.5rem;
 	}
 
 	.updated {
-		font-size: 0.85rem;
-		color: var(--color-ink-muted);
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		color: var(--color-ink-soft);
 		margin: 0 0 3rem;
 	}
 
 	.prose :global(h2) {
-		font-size: 1.15rem;
+		font-family: var(--font-sans);
+		font-size: 1.05rem;
+		font-weight: 600;
+		color: var(--color-ink-strong);
 		margin: 2.5rem 0 0.75rem;
 	}
 
 	.prose :global(p),
 	.prose :global(li) {
-		color: var(--color-ink-muted);
+		color: var(--color-ink-soft);
 		margin: 0 0 1rem;
 	}
 
@@ -71,12 +75,22 @@ const { title, updated } = Astro.props;
 	}
 
 	.prose :global(a) {
-		color: var(--color-accent);
+		color: var(--color-soft-blue-ink);
+	}
+
+	.prose :global(code) {
+		font-family: var(--font-mono);
+		font-size: 0.85em;
+		background: var(--color-canvas-warm);
+		border: 1px solid var(--color-rule);
+		border-radius: var(--radius-xs);
+		padding: 0.1rem 0.3rem;
 	}
 
 	.prose :global(.note) {
-		border: 1px solid var(--color-line-strong);
-		border-radius: var(--radius-md);
+		border: 1px solid var(--color-rule);
+		border-radius: var(--radius-sm);
+		background: var(--color-surface);
 		padding: 1rem 1.25rem;
 		font-size: 0.875rem;
 		margin-bottom: 2.5rem;

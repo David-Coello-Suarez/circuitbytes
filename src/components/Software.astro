@@ -1,0 +1,83 @@
+---
+import { services } from "../data/services";
+---
+
+<section id="software">
+	<div class="wrap">
+		<div class="section-head">
+			<p class="tag tag-blue">Línea 1 · Software</p>
+			<h2>Desarrollo a medida, integración y modernización</h2>
+			<p>
+				Nos hacemos cargo del ciclo completo: análisis, arquitectura,
+				desarrollo, despliegue y soporte.
+			</p>
+		</div>
+
+		<ul class="bento">
+			{
+				services.map((service) => (
+					<li class="card card-hover rise" style={`--span:${service.span}`}>
+						<h3>{service.title}</h3>
+						<p>{service.description}</p>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<style>
+	section {
+		padding-block: 5rem;
+	}
+
+	.section-head .tag {
+		margin-bottom: 1.25rem;
+	}
+
+	/* bento asimétrico: cada celda ocupa lo que su contenido merece */
+	.bento {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(6, 1fr);
+		gap: 1rem;
+	}
+
+	.bento li {
+		grid-column: span var(--span);
+		padding: 1.75rem;
+		display: grid;
+		align-content: start;
+		gap: 0.625rem;
+	}
+
+	.bento h3 {
+		font-size: 1.05rem;
+		margin: 0;
+	}
+
+	.bento p {
+		color: var(--color-ink-soft);
+		font-size: 0.9375rem;
+		margin: 0;
+		max-width: 58ch;
+	}
+
+	@media (max-width: 900px) {
+		.bento {
+			grid-template-columns: 1fr 1fr;
+		}
+
+		.bento li {
+			grid-column: span 1;
+		}
+	}
+
+	@media (max-width: 620px) {
+		.bento {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

@@ -8,7 +8,7 @@ import icon from 'astro-icon';
 export default defineConfig({
   // URL de produccion: alimenta canonical y Open Graph.
   // TODO: ajustar al dominio real antes de desplegar.
-  site: 'https://davidcoello.dev',
+  site: 'https://circuitbyte.ec',
   integrations: [icon()],
   vite: {
     plugins: [tailwindcss()]

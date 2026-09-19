@@ -1,6 +1,6 @@
 ---
 import LegalLayout from "../layouts/LegalLayout.astro";
-import { profile } from "../data/profile";
+import { company } from "../data/company";
 ---
 
 <LegalLayout title="Política de cookies" updated="Septiembre de 2026">
@@ -13,36 +13,37 @@ import { profile } from "../data/profile";
 	<h2>Qué cookies se usan</h2>
 	<p>
 		Este sitio no usa cookies propias de seguimiento ni cookies publicitarias.
-		Solo puede instalar cookies de <strong>analítica</strong>, y únicamente si
+		Únicamente puede instalar cookies de <strong>analítica</strong>, y solo si
 		las aceptas de forma expresa en el aviso que aparece al entrar.
 	</p>
 
 	<h2>Analítica</h2>
 	<p>
-		El servicio utilizado es Google Analytics 4, de Google. Sirve para conocer de
-		forma agregada qué páginas se visitan y cómo llegan los visitantes, con la IP
-		anonimizada. Si no aceptas, el script <strong>no llega a cargarse</strong>: no
-		es que se cargue y no registre, sencillamente no se descarga.
+		El servicio es Google Analytics 4, de Google. Sirve para conocer de forma
+		agregada qué páginas se visitan y por qué vías llegan los visitantes, con la
+		dirección IP anonimizada. Si no aceptas, el script
+		<strong>no llega a descargarse</strong>: no es que se cargue y no registre,
+		sencillamente no se pide al servidor.
 	</p>
 
 	<h2>Cómo se guarda tu decisión</h2>
 	<p>
 		Tu elección se almacena en el navegador mediante <code>localStorage</code>,
-		bajo la clave <code>analytics-consent</code>. No es una cookie y no se envía a
-		ningún servidor: sirve solo para no volver a preguntarte en cada visita.
+		bajo la clave <code>cb-analytics-consent</code>. No es una cookie y no se
+		envía a ningún servidor: sirve solo para no volver a preguntarte en cada
+		visita.
 	</p>
 
 	<h2>Cómo cambiar de opinión</h2>
 	<p>
 		Puedes borrar los datos del sitio desde la configuración de tu navegador. Al
 		volver a entrar, el aviso aparecerá de nuevo y podrás elegir otra opción.
-		También puedes bloquear las cookies desde el propio navegador en cualquier
-		momento.
+		También puedes bloquear las cookies desde el navegador en cualquier momento.
 	</p>
 
 	<h2>Consultas</h2>
 	<p>
-		Si algo de esto no queda claro, escribe a
-		<a href={`mailto:${profile.email}`}>{profile.email}</a>.
+		Si algo no queda claro, escribe a
+		<a href={`mailto:${company.email}`}>{company.email}</a>.
 	</p>
 </LegalLayout>

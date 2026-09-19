@@ -1,145 +1,259 @@
 ---
-import { Icon } from "astro-icon/components";
-import { profile } from "../data/profile";
+import { company } from "../data/company";
+
+/**
+ * El formulario envía a Formspree. Mientras no haya endpoint configurado se
+ * renderiza deshabilitado con un aviso, en lugar de aparentar que funciona:
+ * un formulario que traga leads en silencio es peor que no tenerlo.
+ */
+const hasEndpoint = company.formEndpoint.length > 0;
 ---
 
 <section id="contacto">
 	<div class="wrap">
-		<div class="grid">
-			<div>
-				<h2>Hablemos de tu proyecto</h2>
-				<p class="lead">
-					Cuéntame qué necesitas construir o qué sistema te está dando
-					problemas. Respondo en menos de 24 horas hábiles.
-				</p>
-			</div>
-
-			<ul class="channels">
-				<li>
-					<a href={`mailto:${profile.email}`}>
-						<Icon name="ph:envelope-simple-bold" aria-hidden="true" />
-						<span>
-							<span class="label">Email</span>
-							{profile.email}
-						</span>
-					</a>
-				</li>
-				<li>
-					<a href={profile.whatsappHref}>
-						<Icon name="ph:whatsapp-logo-bold" aria-hidden="true" />
-						<span>
-							<span class="label">WhatsApp</span>
-							{profile.phones[0]}
-						</span>
-					</a>
-				</li>
-				<li>
-					<a href={profile.phonePrimaryHref}>
-						<Icon name="ph:phone-bold" aria-hidden="true" />
-						<span>
-							<span class="label">Teléfono</span>
-							{profile.phones.join(" / ")}
-						</span>
-					</a>
-				</li>
-				<li>
-					<p>
-						<Icon name="ph:map-pin-bold" aria-hidden="true" />
-						<span>
-							<span class="label">Ubicación</span>
-							{profile.location}
-						</span>
-					</p>
-				</li>
-			</ul>
+		<div class="section-head">
+			<h2>Hablemos de tu proyecto</h2>
+			<p>
+				Cuéntanos qué necesitas construir, qué sistema te está dando problemas o
+				qué equipos buscas. Respondemos con los siguientes pasos.
+			</p>
 		</div>
 
-		<a class="btn btn-primary big" href={`mailto:${profile.email}`}>
-			Escribir un correo
-		</a>
+		<div class="grid">
+			<form
+				action={hasEndpoint ? company.formEndpoint : undefined}
+				method="post"
+			>
+				<div class="row">
+					<div class="field">
+						<label for="nombre">Nombre</label>
+						<input id="nombre" name="nombre" type="text" required />
+					</div>
+					<div class="field">
+						<label for="empresa">Empresa</label>
+						<input id="empresa" name="empresa" type="text" />
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="field">
+						<label for="email">Email</label>
+						<input id="email" name="email" type="email" required />
+					</div>
+					<div class="field">
+						<label for="telefono">Teléfono</label>
+						<input id="telefono" name="telefono" type="tel" />
+					</div>
+				</div>
+
+				<div class="field">
+					<label for="tipo">Tipo de consulta</label>
+					<select id="tipo" name="tipo" required>
+						<option value="software">Desarrollo de software</option>
+						<option value="productos">Productos tecnológicos</option>
+						<option value="ambos">Ambos</option>
+					</select>
+				</div>
+
+				<div class="field">
+					<label for="mensaje">Mensaje</label>
+					<textarea id="mensaje" name="mensaje" rows="4" required></textarea>
+				</div>
+
+				{/* Trampa antispam: invisible para personas, tentadora para bots. */}
+				<div class="trap" aria-hidden="true">
+					<label for="sitio">No completar este campo</label>
+					<input id="sitio" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+				</div>
+
+				<button class="btn btn-primary" type="submit" disabled={!hasEndpoint}>
+					Enviar consulta
+				</button>
+
+				{
+					!hasEndpoint && (
+						<p class="notice">
+							{/* TODO: pegar el endpoint de Formspree en company.formEndpoint */}
+							Formulario pendiente de conectar. Mientras tanto, escríbenos a{" "}
+							<a href={`mailto:${company.email}`}>{company.email}</a>.
+						</p>
+					)
+				}
+			</form>
+
+			<aside>
+				<h3>Contacto directo</h3>
+				<ul class="channels">
+					<li>
+						<span class="label">Email</span>
+						<a href={`mailto:${company.email}`}>{company.email}</a>
+					</li>
+					<li>
+						<span class="label">WhatsApp</span>
+						{/* TODO: número real de WhatsApp Business */}
+						<a href={company.whatsapp}>Escribir por WhatsApp</a>
+					</li>
+					<li>
+						<span class="label">Teléfono</span>
+						<a href={company.phoneHref}>{company.phone}</a>
+					</li>
+					<li>
+						<span class="label">LinkedIn</span>
+						{/* TODO: perfil real de la empresa */}
+						<a href={company.linkedin}>Perfil de empresa</a>
+					</li>
+					<li>
+						<span class="label">Ubicación</span>
+						<span>{company.country}</span>
+					</li>
+				</ul>
+
+				{
+					company.calendly && (
+						<a class="btn btn-secondary" href={company.calendly}>
+							Agendar una reunión
+						</a>
+					)
+				}
+			</aside>
+		</div>
 	</div>
 </section>
 
 <style>
 	section {
 		padding-block: 5rem 6rem;
-		border-top: 1px solid var(--color-line);
+		border-top: 1px solid var(--color-rule);
 	}
 
 	.grid {
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+		grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
 		gap: 3rem;
 		align-items: start;
 	}
 
-	h2 {
-		font-size: clamp(1.9rem, 4vw, 2.8rem);
-		max-width: 14ch;
-		margin: 0 0 1rem;
+	form {
+		display: grid;
+		gap: 1.125rem;
 	}
 
-	.lead {
-		color: var(--color-ink-muted);
-		max-width: 46ch;
+	.row {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1.125rem;
+	}
+
+	.field {
+		display: grid;
+		gap: 0.5rem;
+	}
+
+	label {
+		font-size: 0.85rem;
+		color: var(--color-ink-soft);
+	}
+
+	input,
+	select,
+	textarea {
+		width: 100%;
+		font: inherit;
+		font-size: 0.9375rem;
+		color: var(--color-ink-strong);
+		background: var(--color-surface);
+		border: 1px solid var(--color-rule);
+		border-radius: var(--radius-xs);
+		padding: 0.625rem 0.75rem;
+	}
+
+	input:focus-visible,
+	select:focus-visible,
+	textarea:focus-visible {
+		border-color: var(--color-ink-strong);
+	}
+
+	textarea {
+		resize: vertical;
+		min-height: 6.5rem;
+	}
+
+	/* fuera del flujo visual y del orden de tabulación */
+	.trap {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+	}
+
+	button {
+		justify-self: start;
+	}
+
+	button[disabled] {
+		opacity: 0.55;
+		cursor: not-allowed;
+	}
+
+	.notice {
+		font-size: 0.85rem;
+		color: var(--color-ink-soft);
 		margin: 0;
+	}
+
+	.notice a {
+		color: var(--color-soft-blue-ink);
+	}
+
+	aside h3 {
+		font-size: 0.95rem;
+		font-weight: 500;
+		color: var(--color-ink-soft);
+		margin: 0 0 1rem;
 	}
 
 	.channels {
 		list-style: none;
-		margin: 0;
+		margin: 0 0 1.5rem;
 		padding: 0;
-		border-top: 1px solid var(--color-line);
+		border-top: 1px solid var(--color-rule);
 	}
 
 	.channels li {
-		border-bottom: 1px solid var(--color-line);
-	}
-
-	.channels a,
-	.channels p {
-		display: flex;
-		align-items: center;
-		gap: 0.9rem;
-		padding-block: 1rem;
-		margin: 0;
-		font-size: 0.95rem;
-		text-decoration: none;
-		transition: color 180ms var(--ease-out);
-	}
-
-	.channels a:hover {
-		color: var(--color-accent);
-	}
-
-	.channels [data-icon] {
-		width: 1.15rem;
-		height: 1.15rem;
-		color: var(--color-ink-muted);
-		flex-shrink: 0;
-	}
-
-	.channels a:hover [data-icon] {
-		color: var(--color-accent);
+		display: grid;
+		gap: 0.15rem;
+		padding-block: 0.875rem;
+		border-bottom: 1px solid var(--color-rule);
 	}
 
 	.label {
-		display: block;
-		font-size: 0.75rem;
-		color: var(--color-ink-muted);
-		margin-bottom: 0.1rem;
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: var(--color-ink-soft);
 	}
 
-	.big {
-		margin-top: 3rem;
-		padding: 0.9rem 1.75rem;
-		font-size: 1rem;
+	.channels a {
+		font-size: 0.9375rem;
+		color: var(--color-ink-strong);
+		text-decoration: none;
+	}
+
+	.channels a:hover {
+		text-decoration: underline;
 	}
 
 	@media (max-width: 900px) {
 		.grid {
 			grid-template-columns: 1fr;
 			gap: 2.5rem;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.row {
+			grid-template-columns: 1fr;
 		}
 	}
 </style>

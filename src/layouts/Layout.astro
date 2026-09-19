@@ -1,6 +1,6 @@
 ---
-import { profile } from "../data/profile";
-import ConsentBanner from "../components/ConsentBanner.astro";
+import { company } from "../data/company";
+import Consent from "../components/Consent.astro";
 import "../styles/global.css";
 
 interface Props {
@@ -8,10 +8,45 @@ interface Props {
 	description?: string;
 }
 
-const { title = profile.seoTitle, description = profile.seoDescription } =
+const { title = company.seoTitle, description = company.seoDescription } =
 	Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+const schema = {
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "Organization",
+			"@id": `${Astro.site}#organization`,
+			name: company.legalName,
+			alternateName: company.name,
+			slogan: company.tagline,
+			url: String(Astro.site),
+			email: company.email,
+			taxID: company.ruc,
+			address: {
+				"@type": "PostalAddress",
+				addressCountry: "EC",
+			},
+		},
+		{
+			"@type": "LocalBusiness",
+			"@id": `${Astro.site}#business`,
+			name: company.legalName,
+			description: company.seoDescription,
+			url: String(Astro.site),
+			email: company.email,
+			telephone: company.phone,
+			taxID: company.ruc,
+			areaServed: company.country,
+			address: {
+				"@type": "PostalAddress",
+				addressCountry: "EC",
+			},
+		},
+	],
+};
 ---
 
 <!doctype html>
@@ -26,7 +61,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
 		<link rel="canonical" href={canonical} />
 
 		<meta property="og:type" content="website" />
-		<meta property="og:site_name" content={profile.fullName} />
+		<meta property="og:site_name" content={company.legalName} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonical} />
@@ -36,14 +71,19 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
 
-		<meta name="theme-color" content="#0b0d12" />
+		<meta name="theme-color" content="#fbfbfa" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
+		<script
+			type="application/ld+json"
+			is:inline
+			set:html={JSON.stringify(schema)}
+		/>
 	</head>
 	<body>
 		<a class="skip" href="#contenido">Saltar al contenido</a>
 		<slot />
-		<ConsentBanner />
+		<Consent />
 	</body>
 </html>
 
@@ -53,10 +93,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
 		left: 0.75rem;
 		top: -4rem;
 		z-index: 100;
-		background: var(--color-accent);
-		color: var(--color-accent-ink);
+		background: var(--color-ink-strong);
+		color: var(--color-surface);
 		padding: 0.625rem 1.125rem;
-		border-radius: var(--radius-md);
+		border-radius: var(--radius-xs);
 		font-size: 0.875rem;
 		font-weight: 500;
 		text-decoration: none;

@@ -1,0 +1,149 @@
+---
+import { company } from "../data/company";
+
+/**
+ * Google Analytics usa cookies, así que no se carga hasta que el visitante
+ * acepta. La decisión se recuerda en localStorage.
+ */
+---
+
+<div
+	id="consent"
+	class="consent card"
+	role="dialog"
+	aria-labelledby="consent-title"
+	hidden
+>
+	<div>
+		<p id="consent-title" class="title">Cookies de analítica</p>
+		<p class="text">
+			Usamos Google Analytics para saber qué contenido resulta útil. No se carga
+			nada hasta que lo aceptes. Detalles en la <a href="/cookies"
+				>política de cookies</a
+			>.
+		</p>
+	</div>
+
+	<div class="actions">
+		<button class="btn btn-secondary" type="button" data-consent="reject">
+			Rechazar
+		</button>
+		<button class="btn btn-primary" type="button" data-consent="accept">
+			Aceptar
+		</button>
+	</div>
+</div>
+
+<script is:inline define:vars={{ gaId: company.analyticsId }}>
+	(function () {
+		var KEY = "cb-analytics-consent";
+		var banner = document.getElementById("consent");
+		if (!banner) return;
+
+		function loadAnalytics() {
+			// Sin identificador configurado no se carga nada.
+			if (!gaId || gaId.indexOf("XXXX") !== -1) return;
+			if (document.querySelector("script[data-ga]")) return;
+
+			var tag = document.createElement("script");
+			tag.async = true;
+			tag.setAttribute("data-ga", "");
+			tag.src = "https://www.googletagmanager.com/gtag/js?id=" + gaId;
+			document.head.appendChild(tag);
+
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				window.dataLayer.push(arguments);
+			}
+			gtag("js", new Date());
+			gtag("config", gaId, { anonymize_ip: true });
+		}
+
+		// localStorage puede fallar en ventana privada o con cookies bloqueadas.
+		var stored = null;
+		try {
+			stored = localStorage.getItem(KEY);
+		} catch (e) {}
+
+		if (stored === "accept") {
+			loadAnalytics();
+		} else if (stored !== "reject") {
+			banner.hidden = false;
+		}
+
+		banner.addEventListener("click", function (event) {
+			var button = event.target.closest("[data-consent]");
+			if (!button) return;
+			var choice = button.getAttribute("data-consent");
+
+			try {
+				localStorage.setItem(KEY, choice);
+			} catch (e) {}
+
+			banner.hidden = true;
+			if (choice === "accept") loadAnalytics();
+		});
+	})();
+</script>
+
+<style>
+	.consent {
+		position: fixed;
+		left: 1rem;
+		right: 1rem;
+		bottom: 1rem;
+		z-index: 60;
+		max-width: 44rem;
+		margin-inline: auto;
+		padding: 1.25rem 1.5rem;
+		display: grid;
+		grid-template-columns: 1fr auto;
+		align-items: center;
+		gap: 1.5rem;
+		box-shadow: 0 4px 24px rgb(0 0 0 / 0.06);
+	}
+
+	.consent[hidden] {
+		display: none;
+	}
+
+	.title {
+		font-weight: 600;
+		font-size: 0.9375rem;
+		margin: 0 0 0.25rem;
+		color: var(--color-ink-strong);
+	}
+
+	.text {
+		font-size: 0.875rem;
+		color: var(--color-ink-soft);
+		margin: 0;
+		max-width: 58ch;
+	}
+
+	.text a {
+		color: var(--color-soft-blue-ink);
+	}
+
+	.actions {
+		display: flex;
+		gap: 0.625rem;
+		flex-shrink: 0;
+	}
+
+	.actions .btn {
+		padding: 0.55rem 1rem;
+		font-size: 0.875rem;
+	}
+
+	@media (max-width: 640px) {
+		.consent {
+			grid-template-columns: 1fr;
+			gap: 1rem;
+		}
+
+		.actions {
+			justify-content: flex-end;
+		}
+	}
+</style>

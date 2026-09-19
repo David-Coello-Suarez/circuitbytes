@@ -1,0 +1,104 @@
+---
+import { problems } from "../data/content";
+---
+
+<section class="problem">
+	<div class="wrap grid">
+		<h2>Puede que alguna de estas frases te suene.</h2>
+
+		<ul>
+			{problems.map((item) => <li class="rise">{item}</li>)}
+		</ul>
+	</div>
+</section>
+
+<section class="solution" id="solucion">
+	<div class="wrap">
+		<div class="statement">
+			<p class="lead">
+				En CircuitByte desarrollamos software a medida, integramos tus sistemas
+				y modernizamos lo que ya tienes funcionando.
+			</p>
+			<p>
+				Aplicamos inteligencia artificial donde genera valor real: automatizar
+				tareas repetitivas, analizar información y conectar sistemas que hoy no
+				se hablan. Y también te vendemos la tecnología que necesitas para
+				operar.
+			</p>
+
+			<a class="btn btn-primary" href="#contacto">Cotiza tu proyecto</a>
+		</div>
+	</div>
+</section>
+
+<style>
+	.problem {
+		padding-block: 6rem 3rem;
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
+		gap: 2rem 4rem;
+		align-items: start;
+	}
+
+	h2 {
+		font-size: clamp(1.9rem, 4vw, 2.75rem);
+		margin: 0;
+	}
+
+	.problem ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-top: 1px solid var(--color-rule);
+	}
+
+	.problem li {
+		padding-block: 1.125rem;
+		border-bottom: 1px solid var(--color-rule);
+		font-size: 1.0625rem;
+		color: var(--color-ink);
+	}
+
+	.solution {
+		padding-block: 3rem 6rem;
+	}
+
+	.statement {
+		max-width: 60ch;
+	}
+
+	.solution .lead {
+		font-family: var(--font-display);
+		font-size: clamp(1.4rem, 2.8vw, 1.9rem);
+		line-height: 1.35;
+		letter-spacing: -0.02em;
+		color: var(--color-ink-strong);
+		margin: 0 0 1.25rem;
+	}
+
+	.solution p:not(.lead) {
+		color: var(--color-ink-soft);
+		margin: 0;
+	}
+
+	.solution .btn {
+		margin-top: 2rem;
+	}
+
+	@media (max-width: 860px) {
+		.problem {
+			padding-block: 4rem 2.5rem;
+		}
+
+		.grid {
+			grid-template-columns: 1fr;
+		}
+
+		.solution {
+			padding-block: 2.5rem 4rem;
+		}
+	}
+</style>

@@ -1,24 +1,31 @@
 ---
-import { nav, profile } from "../data/profile";
+import { company, nav } from "../data/company";
 ---
 
 <header>
 	<div class="wrap bar">
-		<a class="logo" href="#top">{profile.shortName}</a>
+		<a class="brand" href="#top">
+			{/* TODO: sustituir por el logotipo definitivo de CircuitByte. */}
+			<span class="mark" aria-hidden="true"></span>
+			<span class="name">
+				{company.name}
+				<span class="legal">S.A.S.</span>
+			</span>
+		</a>
 
-		<nav id="nav-principal" aria-label="Principal">
+		<nav id="menu" aria-label="Principal">
 			<ul>
 				{nav.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
 			</ul>
 		</nav>
 
-		<a class="btn btn-primary cta" href="#contacto">Agendar llamada</a>
+		<a class="btn btn-primary cta" href="#contacto">Cotiza tu proyecto</a>
 
 		<button
 			class="burger"
 			type="button"
 			aria-expanded="false"
-			aria-controls="nav-principal"
+			aria-controls="menu"
 			aria-label="Abrir menú"
 		>
 			<span aria-hidden="true"></span>
@@ -30,21 +37,20 @@ import { nav, profile } from "../data/profile";
 <script>
 	const header = document.querySelector("header");
 	const burger = document.querySelector<HTMLButtonElement>(".burger");
-	const nav = document.querySelector<HTMLElement>("#nav-principal");
+	const menu = document.querySelector<HTMLElement>("#menu");
 
-	if (header && burger && nav) {
+	if (header && burger && menu) {
 		const setOpen = (open: boolean) => {
 			header.classList.toggle("is-open", open);
 			burger.setAttribute("aria-expanded", String(open));
 			burger.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
 		};
 
-		burger.addEventListener("click", () => {
-			setOpen(burger.getAttribute("aria-expanded") !== "true");
-		});
+		burger.addEventListener("click", () =>
+			setOpen(burger.getAttribute("aria-expanded") !== "true"),
+		);
 
-		// cerrar al elegir destino o con Escape
-		nav.addEventListener("click", (event) => {
+		menu.addEventListener("click", (event) => {
 			if ((event.target as HTMLElement).closest("a")) setOpen(false);
 		});
 
@@ -61,26 +67,49 @@ import { nav, profile } from "../data/profile";
 	header {
 		position: sticky;
 		top: 0;
-		z-index: 30;
-		background: color-mix(in srgb, var(--color-canvas) 78%, transparent);
-		backdrop-filter: blur(14px);
-		-webkit-backdrop-filter: blur(14px);
-		border-bottom: 1px solid var(--color-line);
+		z-index: 40;
+		background: color-mix(in srgb, var(--color-canvas) 82%, transparent);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		border-bottom: 1px solid var(--color-rule);
 	}
 
 	.bar {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		gap: 1.25rem;
-		height: 4rem;
+		gap: 1.5rem;
+		height: 4.25rem;
 	}
 
-	.logo {
-		font-weight: 600;
-		letter-spacing: -0.02em;
+	.brand {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
 		text-decoration: none;
-		font-size: 1.02rem;
+	}
+
+	.mark {
+		width: 1.5rem;
+		height: 1.5rem;
+		flex-shrink: 0;
+		border-radius: var(--radius-xs);
+		background: var(--color-ink-strong);
+	}
+
+	.name {
+		font-weight: 600;
+		letter-spacing: -0.015em;
+		color: var(--color-ink-strong);
+	}
+
+	.legal {
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		font-weight: 400;
+		color: var(--color-ink-soft);
+		margin-left: 0.15rem;
+		letter-spacing: 0;
 	}
 
 	nav ul {
@@ -92,25 +121,25 @@ import { nav, profile } from "../data/profile";
 	}
 
 	nav a {
-		font-size: 0.89rem;
-		color: var(--color-ink-muted);
+		font-size: 0.9rem;
+		color: var(--color-ink-soft);
 		text-decoration: none;
 		transition: color 180ms var(--ease-out);
 	}
 
 	nav a:hover {
-		color: var(--color-ink);
+		color: var(--color-ink-strong);
 	}
 
 	.burger {
 		display: none;
+		position: relative;
 		width: 2.625rem;
 		height: 2.625rem;
 		padding: 0;
-		position: relative;
-		background: transparent;
-		border: 1px solid var(--color-line);
-		border-radius: var(--radius-md);
+		background: var(--color-surface);
+		border: 1px solid var(--color-rule);
+		border-radius: var(--radius-xs);
 		cursor: pointer;
 	}
 
@@ -119,8 +148,7 @@ import { nav, profile } from "../data/profile";
 		left: 50%;
 		width: 1.0625rem;
 		height: 1.5px;
-		background: var(--color-ink);
-		border-radius: 2px;
+		background: var(--color-ink-strong);
 		transform: translateX(-50%);
 		transition: 220ms var(--ease-out);
 	}
@@ -143,7 +171,7 @@ import { nav, profile } from "../data/profile";
 		transform: translate(-50%, 50%) rotate(-45deg);
 	}
 
-	@media (max-width: 900px) {
+	@media (max-width: 940px) {
 		.cta {
 			display: none;
 		}
@@ -152,15 +180,14 @@ import { nav, profile } from "../data/profile";
 			display: block;
 		}
 
-		/* el panel se despliega bajo la barra y es opaco: detrás hay texto grande */
+		/* panel opaco: detrás hay texto grande que se transparentaría */
 		nav {
 			position: absolute;
 			left: 0;
 			right: 0;
 			top: 100%;
 			background: var(--color-canvas);
-			border-bottom: 1px solid var(--color-line);
-			box-shadow: var(--shadow-lift);
+			border-bottom: 1px solid var(--color-rule);
 			display: grid;
 			grid-template-rows: 0fr;
 			visibility: hidden;
@@ -181,18 +208,14 @@ import { nav, profile } from "../data/profile";
 			padding-inline: 1.5rem;
 		}
 
-		nav li {
-			border-top: 1px solid var(--color-line);
-		}
-
-		nav li:first-child {
-			border-top: none;
+		nav li + li {
+			border-top: 1px solid var(--color-rule);
 		}
 
 		nav a {
 			display: block;
 			padding: 1rem 0;
-			font-size: 0.98rem;
+			font-size: 1rem;
 		}
 	}
 </style>
