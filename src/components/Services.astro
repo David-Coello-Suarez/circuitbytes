@@ -1,0 +1,112 @@
+---
+import { Icon } from "astro-icon/components";
+import { services } from "../data/services";
+---
+
+<section id="servicios">
+	<div class="wrap">
+		<div class="head">
+			<h2>En qué puedo ayudarte</h2>
+			<p>
+				Del front-end a la integración con tu ERP, incluyendo el despliegue y
+				el mantenimiento de lo que ya tienes funcionando.
+			</p>
+		</div>
+
+		<ul class="bento">
+			{
+				services.map((service, index) => (
+					<li
+						class="panel"
+						style={`--span:${service.span}; --index:${index}`}
+						data-reveal
+					>
+						<Icon name={service.icon} aria-hidden="true" />
+						<h3>{service.title}</h3>
+						<p>{service.description}</p>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<style>
+	section {
+		padding-block: 5rem;
+	}
+
+	.head {
+		max-width: 46ch;
+		margin-bottom: 3rem;
+	}
+
+	.head h2 {
+		font-size: clamp(1.75rem, 3.6vw, 2.4rem);
+		margin: 0 0 0.75rem;
+	}
+
+	.head p {
+		color: var(--color-ink-muted);
+		margin: 0;
+	}
+
+	/* bento asimétrico: las celdas no miden lo mismo, así la sección no lee
+	   como una rejilla de tarjetas idénticas */
+	.bento {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(6, 1fr);
+		gap: 1rem;
+	}
+
+	.bento li {
+		grid-column: span var(--span);
+		padding: 1.75rem;
+		display: grid;
+		align-content: start;
+		gap: 0.6rem;
+		transition: border-color 200ms var(--ease-out);
+	}
+
+	.bento li:hover {
+		border-color: var(--color-line-strong);
+	}
+
+	.bento [data-icon] {
+		width: 1.35rem;
+		height: 1.35rem;
+		color: var(--color-accent);
+		margin-bottom: 0.4rem;
+	}
+
+	.bento h3 {
+		font-size: 1.05rem;
+		margin: 0;
+	}
+
+	.bento p {
+		color: var(--color-ink-muted);
+		font-size: 0.925rem;
+		margin: 0;
+		max-width: 54ch;
+	}
+
+	@media (max-width: 900px) {
+		.bento {
+			grid-template-columns: 1fr 1fr;
+		}
+
+		.bento li {
+			grid-column: span 1;
+		}
+	}
+
+	@media (max-width: 600px) {
+		.bento {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

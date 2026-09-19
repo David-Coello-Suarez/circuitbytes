@@ -1,0 +1,115 @@
+---
+import { faq } from "../data/faq";
+---
+
+<section id="faq">
+	<div class="wrap">
+		<div class="head">
+			<h2>Preguntas frecuentes</h2>
+		</div>
+
+		<div class="list">
+			{
+				faq.map((item, index) => (
+					<details open={index === 0} name="faq">
+						<summary>
+							{item.question}
+							<span class="sign" aria-hidden="true" />
+						</summary>
+						<p>{item.answer}</p>
+					</details>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	section {
+		padding-block: 5rem;
+	}
+
+	.head {
+		margin-bottom: 2.5rem;
+	}
+
+	.head h2 {
+		font-size: clamp(1.75rem, 3.6vw, 2.4rem);
+		margin: 0;
+	}
+
+	/* sin contenedores: los items se separan solo con un filete */
+	.list {
+		max-width: 52rem;
+		border-top: 1px solid var(--color-line);
+	}
+
+	details {
+		border-bottom: 1px solid var(--color-line);
+	}
+
+	summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+		padding-block: 1.25rem;
+		cursor: pointer;
+		list-style: none;
+		font-size: 1rem;
+		font-weight: 500;
+		transition: color 180ms var(--ease-out);
+	}
+
+	summary::-webkit-details-marker {
+		display: none;
+	}
+
+	summary:hover {
+		color: var(--color-accent);
+	}
+
+	/* signo + / - dibujado con dos trazos, no con tipografía */
+	.sign {
+		position: relative;
+		width: 12px;
+		height: 12px;
+		flex-shrink: 0;
+	}
+
+	.sign::before,
+	.sign::after {
+		content: "";
+		position: absolute;
+		background: var(--color-accent);
+		transition: transform 200ms var(--ease-out);
+	}
+
+	.sign::before {
+		left: 0;
+		top: 50%;
+		width: 12px;
+		height: 1.5px;
+		transform: translateY(-50%);
+	}
+
+	.sign::after {
+		left: 50%;
+		top: 0;
+		width: 1.5px;
+		height: 12px;
+		transform: translateX(-50%);
+	}
+
+	details[open] .sign::after {
+		transform: translateX(-50%) scaleY(0);
+	}
+
+	details p {
+		margin: 0;
+		padding-bottom: 1.5rem;
+		color: var(--color-ink-muted);
+		font-size: 0.95rem;
+		max-width: 68ch;
+	}
+</style>

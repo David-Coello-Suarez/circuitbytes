@@ -1,0 +1,213 @@
+@import "tailwindcss";
+
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
+/* ─────────────────────────────────────────────
+   David Coello - sistema de diseño
+   Dark del brief, rigor estructural del minimalismo:
+   superficies planas, filete de 1px como único separador,
+   sombras casi inexistentes, cero gradientes decorativos.
+   ───────────────────────────────────────────── */
+
+@theme {
+	/* color: un solo acento de marca (cian). El verde es estado, no marca. */
+	--color-canvas: #0b0d12;
+	--color-surface: #12151d;
+	--color-line: #1f2530;
+	--color-line-strong: #2b3342;
+	--color-ink: #e6e9ef;
+	/* 6.4:1 sobre canvas */
+	--color-ink-muted: #8b94a7;
+	/* 5.1:1 sobre canvas: mínimo AA para texto pequeño */
+	--color-ink-faint: #7a8396;
+	--color-accent: #22d3ee;
+	--color-accent-ink: #06222a;
+	--color-ok: #34d399;
+
+	--font-sans: "Geist Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-mono: "Geist Mono Variable", ui-monospace, Consolas, monospace;
+
+	/* radios: escala corta y crisp, sin pill en contenedores grandes */
+	--radius-sm: 6px;
+	--radius-md: 10px;
+	--radius-lg: 14px;
+
+	/* profundidad: desplazamiento y difuminado, nunca halo de color */
+	--shadow-subtle: 0 1px 2px rgb(0 0 0 / 0.4);
+	--shadow-lift: 0 8px 24px -14px rgb(0 0 0 / 0.75);
+
+	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+	html {
+		scroll-behavior: smooth;
+		/* el header sticky no debe tapar el título al navegar por anclas */
+		scroll-padding-top: 6rem;
+		/* el navegador ya sabe que el documento es oscuro */
+		color-scheme: dark;
+	}
+
+	body {
+		background: var(--color-canvas);
+		color: var(--color-ink);
+		font-family: var(--font-sans);
+		line-height: 1.6;
+		-webkit-font-smoothing: antialiased;
+		text-rendering: optimizeLegibility;
+		overflow-x: hidden;
+	}
+
+	h1,
+	h2,
+	h3 {
+		line-height: 1.12;
+		letter-spacing: -0.032em;
+		font-weight: 600;
+		text-wrap: balance;
+	}
+
+	h3 {
+		line-height: 1.25;
+		letter-spacing: -0.02em;
+	}
+
+	p {
+		text-wrap: pretty;
+	}
+
+	a {
+		text-underline-offset: 0.2em;
+		text-decoration-thickness: 1px;
+	}
+
+	/* superficies del navegador: sin esto la página se ve ensamblada, no construida */
+	::selection {
+		background: var(--color-accent);
+		color: var(--color-accent-ink);
+	}
+
+	:root {
+		caret-color: var(--color-accent);
+		scrollbar-color: var(--color-line-strong) var(--color-canvas);
+		scrollbar-width: thin;
+	}
+
+	::-webkit-scrollbar {
+		width: 10px;
+		height: 10px;
+	}
+
+	::-webkit-scrollbar-track {
+		background: var(--color-canvas);
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: var(--color-line-strong);
+		border-radius: 999px;
+		border: 2px solid var(--color-canvas);
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--color-accent);
+		outline-offset: 3px;
+		border-radius: var(--radius-sm);
+	}
+}
+
+@layer components {
+	.wrap {
+		width: 100%;
+		max-width: 76rem;
+		margin-inline: auto;
+		padding-inline: 1.5rem;
+	}
+
+	/* los números se alinean en columna y no bailan */
+	.tabular {
+		font-variant-numeric: tabular-nums;
+	}
+
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 0.7rem 1.35rem;
+		border-radius: var(--radius-md);
+		border: 1px solid var(--color-line);
+		font-size: 0.925rem;
+		font-weight: 500;
+		text-decoration: none;
+		white-space: nowrap;
+		cursor: pointer;
+		transition:
+			background-color 200ms var(--ease-out),
+			border-color 200ms var(--ease-out),
+			color 200ms var(--ease-out),
+			transform 140ms var(--ease-out);
+	}
+
+	.btn-primary {
+		background: var(--color-accent);
+		color: var(--color-accent-ink);
+		border-color: var(--color-accent);
+		box-shadow: var(--shadow-subtle);
+	}
+
+	.btn-primary:hover {
+		background: color-mix(in oklab, var(--color-accent) 88%, white);
+		border-color: color-mix(in oklab, var(--color-accent) 88%, white);
+	}
+
+	.btn-ghost:hover {
+		border-color: var(--color-line-strong);
+		background: var(--color-surface);
+	}
+
+	/* empuje físico al pulsar */
+	.btn:active {
+		transform: scale(0.98);
+	}
+
+	/* superficie plana: filete de 1px, sin sombra pesada */
+	.panel {
+		background: var(--color-surface);
+		border: 1px solid var(--color-line);
+		border-radius: var(--radius-lg);
+	}
+}
+
+/* ── motion invisible ──
+   Entrada por scroll. El estado base es visible: si el observador no
+   corre, el contenido ya está en su sitio. */
+@media (prefers-reduced-motion: no-preference) {
+	[data-reveal] {
+		opacity: 0;
+		transform: translateY(12px);
+		transition:
+			opacity 600ms var(--ease-out),
+			transform 600ms var(--ease-out);
+		transition-delay: calc(var(--index, 0) * 80ms);
+	}
+
+	[data-reveal].is-visible {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+}

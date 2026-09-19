@@ -1,0 +1,84 @@
+---
+import Layout from "./Layout.astro";
+import Footer from "../components/Footer.astro";
+import { profile } from "../data/profile";
+
+interface Props {
+	title: string;
+	updated: string;
+}
+
+const { title, updated } = Astro.props;
+---
+
+<Layout title={`${title} | ${profile.name}`} description={title}>
+	<div class="wrap page">
+		<a class="back" href="/">Volver al inicio</a>
+
+		<h1>{title}</h1>
+		<p class="updated">Última actualización: {updated}</p>
+
+		<div class="prose">
+			<slot />
+		</div>
+	</div>
+
+	<Footer />
+</Layout>
+
+<style>
+	.page {
+		max-width: 48rem;
+		padding-block: 4rem 5rem;
+	}
+
+	.back {
+		display: inline-block;
+		font-size: 0.85rem;
+		color: var(--color-ink-muted);
+		text-decoration: none;
+		margin-bottom: 2.5rem;
+	}
+
+	.back:hover {
+		color: var(--color-accent);
+	}
+
+	h1 {
+		font-size: clamp(1.9rem, 4vw, 2.6rem);
+		margin: 0 0 0.75rem;
+	}
+
+	.updated {
+		font-size: 0.85rem;
+		color: var(--color-ink-muted);
+		margin: 0 0 3rem;
+	}
+
+	.prose :global(h2) {
+		font-size: 1.15rem;
+		margin: 2.5rem 0 0.75rem;
+	}
+
+	.prose :global(p),
+	.prose :global(li) {
+		color: var(--color-ink-muted);
+		margin: 0 0 1rem;
+	}
+
+	.prose :global(ul) {
+		padding-left: 1.25rem;
+	}
+
+	.prose :global(a) {
+		color: var(--color-accent);
+	}
+
+	.prose :global(.note) {
+		border: 1px solid var(--color-line-strong);
+		border-radius: var(--radius-md);
+		padding: 1rem 1.25rem;
+		font-size: 0.875rem;
+		margin-bottom: 2.5rem;
+	}
+</style>

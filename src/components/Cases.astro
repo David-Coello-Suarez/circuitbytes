@@ -1,0 +1,171 @@
+---
+import { cases } from "../data/cases";
+---
+
+<section id="casos">
+	<div class="wrap">
+		<div class="head">
+			<h2>Casos de éxito</h2>
+			<p>
+				Tres proyectos con el problema que había, lo que construí y el
+				resultado que dejó. Los clientes van identificados por sector.
+			</p>
+		</div>
+
+		<ol class="cases">
+			{
+				cases.map((item, index) => (
+					<li data-reveal style={`--index:${index}`}>
+						<div class="meta">
+							<h3>{item.title}</h3>
+							<p class="sector">{item.sector}</p>
+							<ul class="tags">
+								{item.tags.map((tag) => (
+									<li>{tag}</li>
+								))}
+							</ul>
+						</div>
+
+						<div class="detail">
+							<p class="label">Problema</p>
+							<p>{item.problem}</p>
+							<p class="label">Solución</p>
+							<p>{item.solution}</p>
+						</div>
+
+						<div class="result">
+							<p class="metric tabular">{item.metric}</p>
+							<p class="metric-label">{item.metricLabel}</p>
+							{item.secondary && <p class="secondary">{item.secondary}</p>}
+						</div>
+					</li>
+				))
+			}
+		</ol>
+	</div>
+</section>
+
+<style>
+	section {
+		padding-block: 5rem;
+	}
+
+	.head {
+		max-width: 48ch;
+		margin-bottom: 3rem;
+	}
+
+	.head h2 {
+		font-size: clamp(1.75rem, 3.6vw, 2.4rem);
+		margin: 0 0 0.75rem;
+	}
+
+	.head p {
+		color: var(--color-ink-muted);
+		margin: 0;
+	}
+
+	.cases {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-top: 1px solid var(--color-line-strong);
+	}
+
+	.cases > li {
+		display: grid;
+		grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) minmax(0, 13rem);
+		gap: 2rem 3rem;
+		align-items: start;
+		padding-block: 2.5rem;
+		border-bottom: 1px solid var(--color-line);
+	}
+
+	h3 {
+		font-size: 1.1rem;
+		margin: 0 0 0.35rem;
+	}
+
+	.sector {
+		font-size: 0.85rem;
+		color: var(--color-ink-muted);
+		margin: 0;
+	}
+
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		list-style: none;
+		margin: 1rem 0 0;
+		padding: 0;
+	}
+
+	.tags li {
+		font-size: 0.72rem;
+		color: var(--color-accent);
+		border: 1px solid color-mix(in srgb, var(--color-accent) 28%, transparent);
+		border-radius: var(--radius-sm);
+		padding: 0.2rem 0.5rem;
+	}
+
+	.detail p {
+		margin: 0;
+		color: var(--color-ink-muted);
+		font-size: 0.925rem;
+		max-width: 60ch;
+	}
+
+	.label {
+		font-size: 0.75rem;
+		font-weight: 500;
+		color: var(--color-ink);
+		margin-top: 1rem !important;
+		margin-bottom: 0.25rem !important;
+	}
+
+	.detail .label:first-child {
+		margin-top: 0 !important;
+	}
+
+	.result {
+		border-left: 1px solid var(--color-line);
+		padding-left: 1.5rem;
+	}
+
+	.metric {
+		font-size: 2rem;
+		font-weight: 600;
+		letter-spacing: -0.04em;
+		line-height: 1;
+		margin: 0;
+		color: var(--color-accent);
+	}
+
+	.metric-label {
+		font-size: 0.85rem;
+		color: var(--color-ink-muted);
+		margin: 0.5rem 0 0;
+	}
+
+	.secondary {
+		font-size: 0.85rem;
+		margin: 0.75rem 0 0;
+		padding-top: 0.75rem;
+		border-top: 1px solid var(--color-line);
+	}
+
+	@media (max-width: 1000px) {
+		.cases > li {
+			grid-template-columns: 1fr;
+			gap: 1.5rem;
+		}
+
+		.result {
+			border-left: none;
+			border-top: 1px solid var(--color-line);
+			padding-left: 0;
+			padding-top: 1.25rem;
+		}
+	}
+</style>

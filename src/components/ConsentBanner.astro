@@ -1,0 +1,152 @@
+---
+import { profile } from "../data/profile";
+
+/**
+ * Google Analytics 4 usa cookies, así que no puede cargarse sin consentimiento.
+ * El script se inyecta únicamente cuando el visitante acepta, y la decisión
+ * se recuerda en localStorage.
+ */
+---
+
+<div
+	id="consent"
+	class="consent"
+	role="dialog"
+	aria-labelledby="consent-title"
+	aria-describedby="consent-text"
+	hidden
+>
+	<div class="consent-body">
+		<div>
+			<p id="consent-title" class="consent-title">Cookies de analítica</p>
+			<p id="consent-text" class="consent-text">
+				Uso Google Analytics para saber qué contenido resulta útil. No se carga
+				nada hasta que lo aceptes. Más detalles en la <a href="/cookies"
+					>política de cookies</a
+				>.
+			</p>
+		</div>
+		<div class="consent-actions">
+			<button class="btn btn-ghost" type="button" data-consent="reject">
+				Rechazar
+			</button>
+			<button class="btn btn-primary" type="button" data-consent="accept">
+				Aceptar
+			</button>
+		</div>
+	</div>
+</div>
+
+<script define:vars={{ analyticsId: profile.analyticsId }}>
+	const STORAGE_KEY = "analytics-consent";
+	const banner = document.querySelector("#consent");
+
+	const loadAnalytics = () => {
+		// Sin identificador configurado no se carga nada.
+		if (!analyticsId || analyticsId.includes("XXXX")) return;
+		if (document.querySelector("script[data-ga]")) return;
+
+		const tag = document.createElement("script");
+		tag.async = true;
+		tag.dataset.ga = "true";
+		tag.src = `https://www.googletagmanager.com/gtag/js?id=${analyticsId}`;
+		document.head.appendChild(tag);
+
+		window.dataLayer = window.dataLayer || [];
+		function gtag() {
+			window.dataLayer.push(arguments);
+		}
+		gtag("js", new Date());
+		gtag("config", analyticsId, { anonymize_ip: true });
+	};
+
+	// localStorage puede fallar en modo privado o con las cookies bloqueadas.
+	let stored = null;
+	try {
+		stored = localStorage.getItem(STORAGE_KEY);
+	} catch {}
+
+	if (stored === "accept") {
+		loadAnalytics();
+	} else if (stored !== "reject" && banner) {
+		banner.hidden = false;
+	}
+
+	banner?.addEventListener("click", (event) => {
+		const choice = event.target.closest("[data-consent]")?.dataset.consent;
+		if (!choice) return;
+
+		try {
+			localStorage.setItem(STORAGE_KEY, choice);
+		} catch {}
+
+		banner.hidden = true;
+		if (choice === "accept") loadAnalytics();
+	});
+</script>
+
+<style>
+	.consent {
+		position: fixed;
+		left: 1rem;
+		right: 1rem;
+		bottom: 1rem;
+		z-index: 50;
+		background: var(--color-surface);
+		border: 1px solid var(--color-line-strong);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-lift);
+		max-width: 46rem;
+		margin-inline: auto;
+	}
+
+	.consent[hidden] {
+		display: none;
+	}
+
+	.consent-body {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		align-items: center;
+		gap: 1.5rem;
+		padding: 1.25rem 1.5rem;
+	}
+
+	.consent-title {
+		font-weight: 500;
+		font-size: 0.95rem;
+		margin-bottom: 0.25rem;
+	}
+
+	.consent-text {
+		font-size: 0.85rem;
+		color: var(--color-ink-muted);
+		max-width: 60ch;
+	}
+
+	.consent-text a {
+		color: var(--color-accent);
+	}
+
+	.consent-actions {
+		display: flex;
+		gap: 0.625rem;
+		flex-shrink: 0;
+	}
+
+	.consent-actions .btn {
+		font-size: 0.85rem;
+		padding: 0.55rem 1rem;
+	}
+
+	@media (max-width: 640px) {
+		.consent-body {
+			grid-template-columns: 1fr;
+			gap: 1rem;
+		}
+
+		.consent-actions {
+			justify-content: flex-end;
+		}
+	}
+</style>

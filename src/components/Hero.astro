@@ -1,0 +1,169 @@
+---
+import { heroBadges, profile } from "../data/profile";
+
+const initials = "DC";
+---
+
+<section class="hero" id="top">
+	<div class="wrap grid">
+		<div>
+			<h1>Desarrollo web full-stack para escalar tu negocio</h1>
+
+			<p class="lead">
+				6 años de experiencia creando aplicaciones web, APIs REST e
+				integraciones SAP con React, TypeScript, Node.js y PHP.
+			</p>
+
+			<div class="cta">
+				<a class="btn btn-primary" href="#contacto">Agendar llamada</a>
+				<a class="btn btn-ghost" href="#casos">Ver casos de éxito</a>
+			</div>
+
+			<ul class="badges" aria-label="Tecnologías principales">
+				{heroBadges.map((badge) => <li>{badge}</li>)}
+			</ul>
+		</div>
+
+		<div class="portrait">
+			{
+				/* TODO: al añadir public/david-coello.jpg, sustituir el círculo de
+				   iniciales por <img src={profile.photo} width="280" height="280"
+				   alt={`Retrato de ${profile.fullName}`} /> */
+			}
+			{
+				profile.photo ? (
+					<img
+						src={profile.photo}
+						width="280"
+						height="280"
+						alt={`Retrato de ${profile.fullName}`}
+					/>
+				) : (
+					<div class="placeholder" role="img" aria-label={profile.fullName}>
+						<span aria-hidden="true">{initials}</span>
+					</div>
+				)
+			}
+			<p class="location">
+				<span class="dot" aria-hidden="true"></span>
+				{profile.location}
+			</p>
+		</div>
+	</div>
+</section>
+
+<style>
+	.hero {
+		padding-block: 6rem 4.5rem;
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 4rem;
+	}
+
+	h1 {
+		font-size: clamp(2.1rem, 5vw, 3.5rem);
+		max-width: 17ch;
+		margin: 0 0 1.5rem;
+	}
+
+	.lead {
+		color: var(--color-ink-muted);
+		font-size: 1.075rem;
+		max-width: 52ch;
+		margin: 0;
+	}
+
+	.cta {
+		display: flex;
+		gap: 0.8rem;
+		flex-wrap: wrap;
+		margin-top: 2rem;
+	}
+
+	.badges {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		list-style: none;
+		margin: 2.5rem 0 0;
+		padding: 2rem 0 0;
+		border-top: 1px solid var(--color-line);
+	}
+
+	.badges li {
+		font-size: 0.78rem;
+		color: var(--color-ink-muted);
+		border: 1px solid var(--color-line);
+		border-radius: var(--radius-sm);
+		padding: 0.3rem 0.65rem;
+	}
+
+	.portrait {
+		display: grid;
+		justify-items: center;
+		gap: 1rem;
+	}
+
+	.portrait img,
+	.placeholder {
+		width: 17.5rem;
+		height: 17.5rem;
+		border-radius: 999px;
+		border: 1px solid var(--color-line-strong);
+		object-fit: cover;
+	}
+
+	.placeholder {
+		display: grid;
+		place-items: center;
+		background: var(--color-surface);
+		color: var(--color-ink-muted);
+		font-size: 3rem;
+		font-weight: 500;
+		letter-spacing: -0.03em;
+	}
+
+	.location {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.85rem;
+		color: var(--color-ink-muted);
+		margin: 0;
+	}
+
+	/* verde: estado real de disponibilidad, no color de marca */
+	.dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 999px;
+		background: var(--color-ok);
+		flex-shrink: 0;
+	}
+
+	@media (max-width: 900px) {
+		.hero {
+			padding-block: 4rem 3rem;
+		}
+
+		.grid {
+			grid-template-columns: 1fr;
+			gap: 3rem;
+		}
+
+		.portrait {
+			justify-items: start;
+		}
+
+		.portrait img,
+		.placeholder {
+			width: 11rem;
+			height: 11rem;
+			font-size: 2.25rem;
+		}
+	}
+</style>

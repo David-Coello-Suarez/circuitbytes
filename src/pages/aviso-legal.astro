@@ -1,0 +1,55 @@
+---
+import LegalLayout from "../layouts/LegalLayout.astro";
+import { profile } from "../data/profile";
+---
+
+<LegalLayout title="Aviso legal" updated="Septiembre de 2026">
+	<p class="note">
+		<strong>Pendiente de revisión legal.</strong> Este texto es una base de
+		trabajo, no asesoramiento jurídico. Conviene que un profesional lo revise
+		antes de publicar el sitio.
+	</p>
+
+	<h2>Titular del sitio</h2>
+	<p>
+		Este sitio web pertenece a {profile.fullName}, profesional independiente del
+		desarrollo de software con domicilio profesional en {profile.location}.
+	</p>
+	<p>
+		Correo de contacto: <a href={`mailto:${profile.email}`}>{profile.email}</a>.
+	</p>
+
+	<h2>Objeto</h2>
+	<p>
+		El sitio tiene una finalidad informativa: presentar los servicios
+		profesionales, la trayectoria y las vías de contacto del titular. No se
+		comercializan productos ni se procesan pagos a través de estas páginas.
+	</p>
+
+	<h2>Condiciones de uso</h2>
+	<p>
+		El acceso al sitio es libre y gratuito. Quien lo utiliza se compromete a
+		hacerlo conforme a la ley y a no realizar acciones que puedan dañar el
+		funcionamiento del sitio o los derechos de terceros.
+	</p>
+
+	<h2>Propiedad intelectual</h2>
+	<p>
+		Los textos, el diseño y el código de este sitio pertenecen a su titular,
+		salvo las marcas y logotipos de terceros, que son propiedad de sus
+		respectivos dueños y se mencionan únicamente a efectos descriptivos.
+	</p>
+
+	<h2>Responsabilidad</h2>
+	<p>
+		La información se ofrece de buena fe y se procura mantenerla actualizada, sin
+		que ello suponga garantía de ausencia de errores. Los enlaces a sitios
+		externos se facilitan por conveniencia y no implican responsabilidad sobre su
+		contenido.
+	</p>
+
+	<h2>Legislación aplicable</h2>
+	<p>
+		Esta relación se rige por la legislación de la República del Ecuador.
+	</p>
+</LegalLayout>

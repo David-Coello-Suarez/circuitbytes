@@ -1,0 +1,198 @@
+---
+import { nav, profile } from "../data/profile";
+---
+
+<header>
+	<div class="wrap bar">
+		<a class="logo" href="#top">{profile.shortName}</a>
+
+		<nav id="nav-principal" aria-label="Principal">
+			<ul>
+				{nav.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+			</ul>
+		</nav>
+
+		<a class="btn btn-primary cta" href="#contacto">Agendar llamada</a>
+
+		<button
+			class="burger"
+			type="button"
+			aria-expanded="false"
+			aria-controls="nav-principal"
+			aria-label="Abrir menú"
+		>
+			<span aria-hidden="true"></span>
+			<span aria-hidden="true"></span>
+		</button>
+	</div>
+</header>
+
+<script>
+	const header = document.querySelector("header");
+	const burger = document.querySelector<HTMLButtonElement>(".burger");
+	const nav = document.querySelector<HTMLElement>("#nav-principal");
+
+	if (header && burger && nav) {
+		const setOpen = (open: boolean) => {
+			header.classList.toggle("is-open", open);
+			burger.setAttribute("aria-expanded", String(open));
+			burger.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+		};
+
+		burger.addEventListener("click", () => {
+			setOpen(burger.getAttribute("aria-expanded") !== "true");
+		});
+
+		// cerrar al elegir destino o con Escape
+		nav.addEventListener("click", (event) => {
+			if ((event.target as HTMLElement).closest("a")) setOpen(false);
+		});
+
+		document.addEventListener("keydown", (event) => {
+			if (event.key === "Escape" && header.classList.contains("is-open")) {
+				setOpen(false);
+				burger.focus();
+			}
+		});
+	}
+</script>
+
+<style>
+	header {
+		position: sticky;
+		top: 0;
+		z-index: 30;
+		background: color-mix(in srgb, var(--color-canvas) 78%, transparent);
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
+		border-bottom: 1px solid var(--color-line);
+	}
+
+	.bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.25rem;
+		height: 4rem;
+	}
+
+	.logo {
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		text-decoration: none;
+		font-size: 1.02rem;
+	}
+
+	nav ul {
+		display: flex;
+		gap: 1.75rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	nav a {
+		font-size: 0.89rem;
+		color: var(--color-ink-muted);
+		text-decoration: none;
+		transition: color 180ms var(--ease-out);
+	}
+
+	nav a:hover {
+		color: var(--color-ink);
+	}
+
+	.burger {
+		display: none;
+		width: 2.625rem;
+		height: 2.625rem;
+		padding: 0;
+		position: relative;
+		background: transparent;
+		border: 1px solid var(--color-line);
+		border-radius: var(--radius-md);
+		cursor: pointer;
+	}
+
+	.burger span {
+		position: absolute;
+		left: 50%;
+		width: 1.0625rem;
+		height: 1.5px;
+		background: var(--color-ink);
+		border-radius: 2px;
+		transform: translateX(-50%);
+		transition: 220ms var(--ease-out);
+	}
+
+	.burger span:first-child {
+		top: 1rem;
+	}
+
+	.burger span:last-child {
+		bottom: 1rem;
+	}
+
+	:global(header.is-open) .burger span:first-child {
+		top: 50%;
+		transform: translate(-50%, -50%) rotate(45deg);
+	}
+
+	:global(header.is-open) .burger span:last-child {
+		bottom: 50%;
+		transform: translate(-50%, 50%) rotate(-45deg);
+	}
+
+	@media (max-width: 900px) {
+		.cta {
+			display: none;
+		}
+
+		.burger {
+			display: block;
+		}
+
+		/* el panel se despliega bajo la barra y es opaco: detrás hay texto grande */
+		nav {
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 100%;
+			background: var(--color-canvas);
+			border-bottom: 1px solid var(--color-line);
+			box-shadow: var(--shadow-lift);
+			display: grid;
+			grid-template-rows: 0fr;
+			visibility: hidden;
+			transition:
+				grid-template-rows 250ms var(--ease-out),
+				visibility 250ms;
+		}
+
+		:global(header.is-open) nav {
+			grid-template-rows: 1fr;
+			visibility: visible;
+		}
+
+		nav ul {
+			flex-direction: column;
+			gap: 0;
+			overflow: hidden;
+			padding-inline: 1.5rem;
+		}
+
+		nav li {
+			border-top: 1px solid var(--color-line);
+		}
+
+		nav li:first-child {
+			border-top: none;
+		}
+
+		nav a {
+			display: block;
+			padding: 1rem 0;
+			font-size: 0.98rem;
+		}
+	}
+</style>

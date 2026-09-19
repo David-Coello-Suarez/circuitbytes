@@ -1,0 +1,155 @@
+---
+import { experience } from "../data/experience";
+---
+
+<section id="experiencia">
+	<div class="wrap">
+		<div class="head">
+			<h2>Experiencia</h2>
+		</div>
+
+		<ol class="timeline">
+			{
+				experience.map((job, index) => (
+					<li data-reveal style={`--index:${index}`}>
+						<div class="when">
+							<span class:list={["marker", { current: job.current }]} aria-hidden="true" />
+							<p class="period">{job.period}</p>
+						</div>
+
+						<div class="what">
+							<h3>{job.role}</h3>
+							<p class="company">{job.company}</p>
+							<ul>
+								{job.highlights.map((point) => (
+									<li>{point}</li>
+								))}
+							</ul>
+						</div>
+					</li>
+				))
+			}
+		</ol>
+	</div>
+</section>
+
+<style>
+	section {
+		padding-block: 5rem;
+	}
+
+	.head {
+		margin-bottom: 3rem;
+	}
+
+	.head h2 {
+		font-size: clamp(1.75rem, 3.6vw, 2.4rem);
+		margin: 0;
+	}
+
+	.timeline {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.timeline > li {
+		display: grid;
+		grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+		gap: 0.75rem 2.5rem;
+		padding-bottom: 2.5rem;
+	}
+
+	.when {
+		display: flex;
+		align-items: baseline;
+		gap: 0.75rem;
+	}
+
+	/* la línea vertical nace del marcador y une los puestos */
+	.marker {
+		position: relative;
+		width: 9px;
+		height: 9px;
+		flex-shrink: 0;
+		border-radius: 999px;
+		border: 1px solid var(--color-line-strong);
+		background: var(--color-canvas);
+		transform: translateY(-2px);
+	}
+
+	.marker.current {
+		background: var(--color-ok);
+		border-color: var(--color-ok);
+	}
+
+	.marker::after {
+		content: "";
+		position: absolute;
+		left: 50%;
+		top: 100%;
+		width: 1px;
+		height: 6rem;
+		background: var(--color-line);
+		transform: translateX(-50%);
+	}
+
+	.timeline > li:last-child .marker::after {
+		display: none;
+	}
+
+	.period {
+		font-size: 0.85rem;
+		color: var(--color-ink-muted);
+		margin: 0;
+	}
+
+	h3 {
+		font-size: 1.05rem;
+		margin: 0;
+	}
+
+	.company {
+		font-size: 0.9rem;
+		color: var(--color-ink-muted);
+		margin: 0.2rem 0 0;
+	}
+
+	.what ul {
+		margin: 0.9rem 0 0;
+		padding: 0;
+		list-style: none;
+		display: grid;
+		gap: 0.4rem;
+	}
+
+	.what ul li {
+		font-size: 0.925rem;
+		color: var(--color-ink-muted);
+		max-width: 62ch;
+		padding-left: 1rem;
+		position: relative;
+	}
+
+	.what ul li::before {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 0.7em;
+		width: 4px;
+		height: 1px;
+		background: var(--color-line-strong);
+	}
+
+	@media (max-width: 860px) {
+		.timeline > li {
+			grid-template-columns: 1fr;
+			gap: 0.5rem;
+			padding-bottom: 2rem;
+		}
+
+		.marker::after {
+			display: none;
+		}
+	}
+</style>

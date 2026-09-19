@@ -1,0 +1,66 @@
+---
+import { profile } from "../data/profile";
+---
+
+<section id="sobre-mi">
+	<div class="wrap grid">
+		<h2>Sobre mí</h2>
+
+		<div class="body">
+			<p>
+				Soy David Coello, desarrollador full-stack en Guayaquil, Ecuador. Me
+				especializo en React, TypeScript, Node.js y PHP.
+			</p>
+			<p>
+				He trabajado en integración con SAP, seguridad con JWT, Docker y
+				optimización de sistemas heredados: ese código que nadie quiere tocar y
+				que sostiene la operación todos los días.
+			</p>
+			<p>
+				Busco proyectos donde pueda aportar arquitectura escalable y resultados
+				medibles, no solo entregar tareas.
+			</p>
+
+			<a class="btn btn-ghost" href={profile.linkedin}>Ver perfil en LinkedIn</a>
+		</div>
+	</div>
+</section>
+
+<style>
+	section {
+		padding-block: 5rem;
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+		gap: 2rem 4rem;
+		align-items: start;
+	}
+
+	h2 {
+		font-size: clamp(1.75rem, 3.6vw, 2.4rem);
+		margin: 0;
+	}
+
+	.body p {
+		color: var(--color-ink-muted);
+		font-size: 1.02rem;
+		max-width: 62ch;
+		margin: 0;
+	}
+
+	.body p + p {
+		margin-top: 1.25rem;
+	}
+
+	.body .btn {
+		margin-top: 2rem;
+	}
+
+	@media (max-width: 860px) {
+		.grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
