@@ -23,8 +23,15 @@ startup ── commits ── push ── PR + check ──▶ produccion
    git checkout startup && git pull
    ```
 
-2. **Commitea.** Mensajes en imperativo y en español, explicando el *porqué* del
-   cambio; el *qué* ya está en el diff.
+2. **Commitea.** En imperativo y en español, explicando el *porqué* del cambio;
+   el *qué* ya está en el diff. **El asunto lleva prefijo**, porque de ahí sale
+   la versión (ver [Versionado](#versionado)):
+
+   ```
+   feat: anade el formulario de contacto
+   fix(nginx): corrige la redireccion de directorio
+   docs: documenta el flujo de publicacion
+   ```
 
 3. **Sube.** Cada push a `startup` dispara el check, así que sabes cómo está la
    rama antes de publicar:
@@ -59,6 +66,27 @@ startup ── commits ── push ── PR + check ──▶ produccion
    *merge* normal: cada commit de `startup` ya se sostiene por sí solo, y así
    `produccion` conserva el historial de lo que salió.
 
+## Versionado
+
+Al mergear en `produccion`, y **solo si el check `pr` quedó en verde**, el
+workflow `release` calcula la versión leyendo los commits desde el último tag,
+crea `vX.Y.Z` y publica el GitHub Release con sus notas.
+
+| El asunto empieza por | Sube |
+| --- | --- |
+| `feat!:` · `fix!:` · o `BREAKING CHANGE` en el cuerpo | mayor (`1.4.2` → `2.0.0`) |
+| `feat:` | menor (`1.4.2` → `1.5.0`) |
+| `fix:` · `perf:` | parche (`1.4.2` → `1.4.3`) |
+| `docs:` · `chore:` · `ci:` · `refactor:` · `style:` · `test:` | nada |
+
+Gana el salto mayor de toda la tanda. Si ningún commit pide versión —una tanda
+solo de `docs:`, por ejemplo— no se publica release, y el resumen de la
+ejecución lo dice. La primera publicación crea `v0.1.0` como línea base.
+
+**El tag es la fuente de verdad de la versión**, no `package.json`: ese campo se
+queda en `0.0.1` y no se usa. Escribirlo desde CI obligaría a commitear en
+`produccion`, que es justo lo que el flujo impide.
+
 ## Después de mergear: desplegar
 
 El sitio **no se publica solo**. Mergear a `produccion` solo deja el código
@@ -66,10 +94,13 @@ listo. En el servidor, siguiendo los comentarios de
 `deploy/circuitbyte-landing.container`:
 
 ```sh
-git pull                                      # ya en produccion
+git fetch --tags && git checkout vX.Y.Z       # la version del release
 podman build -t circuitbyte-landing:latest .
 systemctl --user restart circuitbyte-landing
 ```
+
+Desplegar el tag y no la punta de la rama deja constancia de qué versión está
+sirviendo el servidor. El propio release trae estos comandos ya rellenados.
 
 ## Sobre las ramas
 
