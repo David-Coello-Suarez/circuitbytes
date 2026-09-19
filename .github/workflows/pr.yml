@@ -1,0 +1,157 @@
+name: pr
+
+# Puerta de entrada a la rama de presentacion. Cualquier rama integra sus
+# cambios abriendo un PR contra main, y este check debe quedar en verde.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Un PR que recibe varios push seguidos solo gasta un runner: el anterior se
+# cancela.
+concurrency:
+  group: pr-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+# Minimo privilegio: el workflow solo necesita leer el codigo.
+permissions:
+  contents: read
+
+jobs:
+  verificar:
+    name: pr
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Descargar el codigo
+        uses: actions/checkout@v7
+
+      # Debe ir antes de setup-node: la cache de node depende de que pnpm ya
+      # exista. La version sale del campo packageManager de package.json.
+      - name: Preparar pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Preparar Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      # Primera red: que el sitio compile. Atrapa errores de Astro, de
+      # TypeScript en src/data/ y de Tailwind.
+      - name: Construir el sitio
+        run: pnpm build
+
+      # Segunda red: que la imagen se construya. Atrapa un Dockerfile roto o un
+      # lockfile desincronizado (el build usa --frozen-lockfile).
+      - name: Construir la imagen
+        run: docker build --provenance=false --sbom=false -t landing:pr .
+
+      # Tercera red: que el contenedor sirva de verdad. Se arranca con las
+      # mismas restricciones que usa Podman en el servidor, asi que tambien
+      # valida que nginx funcione con el rootfs de solo lectura.
+      - name: Arrancar el contenedor
+        run: |
+          docker run -d --name landing-pr -p 127.0.0.1:8080:8080 \
+            --read-only --cap-drop ALL --security-opt no-new-privileges \
+            --tmpfs /tmp --tmpfs /var/cache/nginx \
+            landing:pr
+          for i in $(seq 1 30); do
+            estado=$(docker inspect --format '{{.State.Health.Status}}' landing-pr)
+            [ "$estado" = "healthy" ] && break
+            [ "$estado" = "unhealthy" ] && { docker logs landing-pr; exit 1; }
+            sleep 2
+          done
+          test "$(docker inspect --format '{{.State.Health.Status}}' landing-pr)" = healthy
+
+      - name: Comprobar que sirve correctamente
+        run: |
+          set -euo pipefail
+          base=http://127.0.0.1:8080
+          fallos=0
+
+          comprobar() { # url, codigo esperado
+            real=$(curl -s -o /dev/null -w '%{http_code}' "$base$1")
+            if [ "$real" = "$2" ]; then
+              echo "ok    $1 -> $real"
+            else
+              echo "FALLO $1 -> $real (esperado $2)"; fallos=$((fallos+1))
+            fi
+          }
+
+          # Las cuatro rutas estaticas responden.
+          comprobar /                 200
+          comprobar /privacidad/      200
+          comprobar /cookies/         200
+          comprobar /aviso-legal/     200
+          comprobar /healthz          200
+          # Un sitio multipagina debe dar 404 real, no el index enmascarado.
+          comprobar /ruta-inexistente 404
+          # Los archivos ocultos no se sirven.
+          comprobar /.git/config      403
+
+          # El 301 de directorio debe llevar Location relativo: si filtrara el
+          # puerto interno (http://host:8080/...), el proxy que termina el TLS
+          # degradaria la navegacion a HTTP.
+          location=$(curl -sI "$base/privacidad" | tr -d '\r' | awk '/^[Ll]ocation:/{print $2}')
+          if [ "$location" = "/privacidad/" ]; then
+            echo "ok    redireccion relativa -> $location"
+          else
+            echo "FALLO redireccion -> '$location' (esperado /privacidad/)"; fallos=$((fallos+1))
+          fi
+
+          # El HTML precomprimido se sirve desde disco (gzip_static).
+          if curl -sI -H 'Accept-Encoding: gzip' "$base/" | grep -qi '^content-encoding: gzip'; then
+            echo "ok    gzip_static"
+          else
+            echo "FALLO no se sirve gzip"; fallos=$((fallos+1))
+          fi
+
+          # Cabeceras de seguridad y CSP.
+          cabeceras=$(curl -sI "$base/" | tr -d '\r')
+          for h in 'Content-Security-Policy' 'X-Content-Type-Options' 'Referrer-Policy' 'Permissions-Policy'; do
+            if echo "$cabeceras" | grep -qi "^$h:"; then
+              echo "ok    cabecera $h"
+            else
+              echo "FALLO falta la cabecera $h"; fallos=$((fallos+1))
+            fi
+          done
+
+          # El proceso no puede ser root.
+          uid=$(docker exec landing-pr id -u)
+          if [ "$uid" = "101" ]; then
+            echo "ok    corre como uid 101"
+          else
+            echo "FALLO corre como uid $uid"; fallos=$((fallos+1))
+          fi
+
+          echo "---"
+          test "$fallos" -eq 0 || { echo "$fallos comprobacion(es) fallida(s)"; exit 1; }
+          echo "todas las comprobaciones en verde"
+
+      - name: Recoger los logs de nginx si algo fallo
+        if: failure()
+        run: docker logs landing-pr || true
+
+      - name: Parar el contenedor
+        if: always()
+        run: docker rm -f landing-pr || true
+
+      # Cuarta red: vulnerabilidades. Solo bloquea por CVEs que tengan
+      # correccion disponible; una CVE sin parche aguas arriba no deberia
+      # frenar un PR, porque no hay nada que hacer al respecto.
+      - name: Escanear vulnerabilidades
+        uses: aquasecurity/trivy-action@0.36.0
+        with:
+          image-ref: landing:pr
+          scanners: vuln
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '1'
+          format: table
