@@ -2,7 +2,9 @@
 #
 # Instalacion en el servidor, como usuario sin privilegios:
 #
-#   podman build -t circuitbyte-landing:latest .
+#   # El paquete es privado: una sola vez, con un token que tenga read:packages.
+#   podman login ghcr.io -u <usuario> --authfile ~/.config/containers/auth.json
+#
 #   mkdir -p ~/.config/containers/systemd
 #   cp deploy/circuitbyte-landing.container ~/.config/containers/systemd/
 #   systemctl --user daemon-reload
@@ -11,6 +13,10 @@
 #
 # Para que siga en pie sin sesion abierta (imprescindible en un servidor):
 #   sudo loginctl enable-linger $USER
+#
+# Actualizar a una version nueva: cambiar el tag de Image= aqui abajo, y luego
+# `systemctl --user daemon-reload && systemctl --user restart circuitbyte-landing`.
+# El servidor ya no compila: cada release publica la imagen ya escaneada.
 #
 # Quadlet genera la unidad a partir de este archivo: NO se usa
 # `systemctl --user enable`; el [Install] de abajo es lo que la activa.
@@ -22,9 +28,12 @@ Wants=network-online.target
 
 [Container]
 ContainerName=circuitbyte-landing
-Image=localhost/circuitbyte-landing:latest
-# Imagen construida en el propio host: que no intente ir a un registro.
-Pull=never
+# Tag de version explicito, nunca `prod`: asi el archivo dice que esta sirviendo
+# el servidor, y un reinicio no arrastra una version que nadie decidio desplegar.
+Image=ghcr.io/david-coello-suarez/circuitbytes:v0.2.0
+# La imagen ya esta en el host tras el pull; que no vaya al registro en cada
+# arranque, que dejaria el servicio a merced de GHCR para reiniciarse.
+Pull=missing
 
 # Solo loopback. El proxy inverso del host (Traefik/Caddy/nginx) termina el TLS
 # y hace proxy_pass a 127.0.0.1:8080. Rootless no puede ligar puertos <1024.
