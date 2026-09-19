@@ -1,0 +1,143 @@
+name: release
+
+# Genera la version cuando algo entra en `produccion`.
+#
+# Se engancha al check `pr` en vez de al push: GitHub Actions no permite `needs`
+# entre workflows, y sin esto el release saldria en paralelo a la verificacion,
+# es decir, podria etiquetar codigo roto. Asi solo corre si `pr` quedo en verde.
+#
+# La version sale de los mensajes de commit (Conventional Commits), y el tag es
+# la fuente de verdad: `package.json` no se toca, porque escribir en `produccion`
+# desde CI se saltaria el propio flujo de PR.
+on:
+  workflow_run:
+    workflows: [pr]
+    types: [completed]
+    branches: [produccion]
+
+# Dos merges seguidos no pueden calcular la version a la vez: el segundo leeria
+# tags que el primero aun no ha empujado.
+concurrency:
+  group: release-produccion
+  cancel-in-progress: false
+
+permissions:
+  contents: write # crear el tag y el release
+
+jobs:
+  publicar:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Descargar el codigo
+        uses: actions/checkout@v7
+        with:
+          # El sha que verifico el check, no la punta de la rama: entre medias
+          # puede haber entrado otro merge.
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0 # el calculo necesita el historial y los tags
+
+      - name: Calcular la version
+        id: version
+        run: |
+          set -euo pipefail
+
+          ultimo=$(git tag --list 'v*' --sort=-v:refname | head -n1)
+
+          # Sin tags previos no hay nada que comparar: se parte de una linea
+          # base y a partir de ahi ya mandan los commits.
+          if [ -z "$ultimo" ]; then
+            echo "Sin tags previos: linea base v0.1.0"
+            echo "version=0.1.0" >> "$GITHUB_OUTPUT"
+            echo "publicar=si"   >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Ultimo tag: $ultimo"
+          base="${ultimo#v}"
+
+          # Que salto pide cada commit desde ese tag. Gana el mayor:
+          #   feat!: o BREAKING CHANGE -> major
+          #   feat:                    -> minor
+          #   fix: o perf:             -> patch
+          # El resto (docs, chore, ci, refactor, style, test) y los merges no
+          # publican nada por si solos.
+          salto=ninguno
+          for commit in $(git rev-list "$ultimo..HEAD"); do
+            asunto=$(git log -1 --format=%s "$commit")
+            cuerpo=$(git log -1 --format=%b "$commit")
+
+            if printf '%s' "$asunto" | grep -qE '^[a-z]+(\([^)]*\))?!:' \
+               || printf '%s' "$cuerpo" | grep -q 'BREAKING CHANGE'; then
+              salto=major
+              break
+            fi
+
+            if printf '%s' "$asunto" | grep -qE '^feat(\([^)]*\))?:'; then
+              salto=minor
+            elif printf '%s' "$asunto" | grep -qE '^(fix|perf)(\([^)]*\))?:' \
+                 && [ "$salto" = ninguno ]; then
+              salto=patch
+            fi
+          done
+
+          echo "Salto: $salto"
+
+          if [ "$salto" = ninguno ]; then
+            echo "Ningun commit pide version nueva; no se publica."
+            echo "publicar=no" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          IFS=. read -r mayor menor parche <<< "$base"
+          case "$salto" in
+            major) mayor=$((mayor + 1)); menor=0; parche=0 ;;
+            minor) menor=$((menor + 1)); parche=0 ;;
+            patch) parche=$((parche + 1)) ;;
+          esac
+
+          echo "version=${mayor}.${menor}.${parche}" >> "$GITHUB_OUTPUT"
+          echo "publicar=si" >> "$GITHUB_OUTPUT"
+
+      - name: Comprobar que el tag no existe
+        if: steps.version.outputs.publicar == 'si'
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/v${{ steps.version.outputs.version }}" >/dev/null; then
+            echo "::error::El tag v${{ steps.version.outputs.version }} ya existe."
+            exit 1
+          fi
+
+      - name: Crear el tag
+        if: steps.version.outputs.publicar == 'si'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${{ steps.version.outputs.version }}" \
+            -m "Release v${{ steps.version.outputs.version }}"
+          git push origin "v${{ steps.version.outputs.version }}"
+
+      - name: Publicar el release
+        if: steps.version.outputs.publicar == 'si'
+        uses: softprops/action-gh-release@v3.0.3
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: v${{ steps.version.outputs.version }}
+          generate_release_notes: true
+          body: |
+            Para desplegar, en el servidor:
+
+            ```sh
+            git fetch --tags && git checkout v${{ steps.version.outputs.version }}
+            podman build -t circuitbyte-landing:latest .
+            systemctl --user restart circuitbyte-landing
+            ```
+
+      - name: Resumen
+        run: |
+          if [ "${{ steps.version.outputs.publicar }}" = "si" ]; then
+            echo "Publicada v${{ steps.version.outputs.version }}" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Sin version nueva: ningun commit uso feat:, fix: ni perf:" >> "$GITHUB_STEP_SUMMARY"
+          fi
