@@ -1,0 +1,16 @@
+# Allowlist: se ignora todo y solo se reintroduce lo que el build necesita.
+# Asi ningun .env, .git, node_modules, dist/, prototypes/ ni archivo suelto de
+# la raiz entra jamas en el contexto de build.
+*
+
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!astro.config.mjs
+!tsconfig.json
+!src
+!public
+
+# configuracion del servidor de la etapa runtime
+!nginx.conf
+!security-headers.inc

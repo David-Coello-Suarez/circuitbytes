@@ -36,8 +36,8 @@ export const company = {
 	formEndpoint: "",
 	// TODO: enlace de Calendly para agendar reuniones.
 	calendly: "",
-	// TODO: identificador real de Google Analytics 4.
-	analyticsId: "G-XXXXXXXXXX",
+	/** Medición de GA4. El banner de cookies decide si llega a cargarse. */
+	analyticsId: "G-LL6DWYV8SE",
 } as const;
 
 export const nav: NavLink[] = [

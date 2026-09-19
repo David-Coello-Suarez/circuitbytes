@@ -1,0 +1,56 @@
+# Quadlet systemd para Podman rootless.
+#
+# Instalacion en el servidor, como usuario sin privilegios:
+#
+#   podman build -t circuitbyte-landing:latest .
+#   mkdir -p ~/.config/containers/systemd
+#   cp deploy/circuitbyte-landing.container ~/.config/containers/systemd/
+#   systemctl --user daemon-reload
+#   systemctl --user start circuitbyte-landing
+#   systemctl --user status circuitbyte-landing
+#
+# Para que siga en pie sin sesion abierta (imprescindible en un servidor):
+#   sudo loginctl enable-linger $USER
+#
+# Quadlet genera la unidad a partir de este archivo: NO se usa
+# `systemctl --user enable`; el [Install] de abajo es lo que la activa.
+
+[Unit]
+Description=Landing de CircuitByte S.A.S. (nginx estatico)
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+ContainerName=circuitbyte-landing
+Image=localhost/circuitbyte-landing:latest
+# Imagen construida en el propio host: que no intente ir a un registro.
+Pull=never
+
+# Solo loopback. El proxy inverso del host (Traefik/Caddy/nginx) termina el TLS
+# y hace proxy_pass a 127.0.0.1:8080. Rootless no puede ligar puertos <1024.
+PublishPort=127.0.0.1:8080:8080
+
+# --- Endurecimiento ---
+ReadOnly=true
+NoNewPrivileges=true
+DropCapability=all
+
+# nginx necesita escribir el pid y los directorios temporales de cliente.
+# Con el rootfs de solo lectura, esas dos rutas van en tmpfs.
+Tmpfs=/tmp:rw,noexec,nosuid,nodev,size=16m
+Tmpfs=/var/cache/nginx:rw,noexec,nosuid,nodev,size=32m
+
+# --- Limites de recursos ---
+PodmanArgs=--memory=128m --memory-swap=128m --cpus=0.5 --pids-limit=64
+
+# Zona horaria del host para que los logs cuadren.
+Environment=TZ=America/Guayaquil
+
+[Service]
+Restart=always
+RestartSec=5
+# El healthcheck de la imagen tarda hasta start-period en dar verde.
+TimeoutStartSec=60
+
+[Install]
+WantedBy=default.target
