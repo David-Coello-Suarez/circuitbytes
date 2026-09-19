@@ -1,42 +1,49 @@
 # Cómo contribuir
 
-La rama **`produccion`** es la que se despliega: lo que hay en ella es lo que
-sirve el servidor. **Nadie escribe en ella directamente**; todo cambio entra por
-un pull request verificado.
+El repositorio tiene **dos ramas, y solo dos**:
 
-`startup` es la rama de integración, donde se acumula el trabajo del día a día
-antes de publicarlo.
+| Rama | Para qué |
+| --- | --- |
+| `startup` | Donde se trabaja. Es la rama por defecto. |
+| `produccion` | Lo que se despliega. **Nadie escribe en ella directamente.** |
+
+Publicar es abrir un pull request de `startup` hacia `produccion` y que el check
+`pr` quede en verde.
 
 ## El flujo
 
 ```
-feat/x ── PR + check ──▶ startup ── PR + check ──▶ produccion
-                      (integracion)             (despliegue)
+startup ── commits ── push ── PR + check ──▶ produccion
+(trabajo)                                   (despliegue)
 ```
 
-1. **Parte de `startup` actualizada.**
+1. **Trabaja en `startup`.**
 
    ```sh
    git checkout startup && git pull
-   git checkout -b <tipo>/<descripcion-corta>
    ```
 
-   Prefijos habituales: `feat/`, `fix/`, `ci/`, `docs/`, `refactor/`.
+2. **Commitea.** Mensajes en imperativo y en español, explicando el *porqué* del
+   cambio; el *qué* ya está en el diff.
 
-2. **Trabaja y commitea.** Mensajes en imperativo y en español, explicando el
-   *porqué* del cambio; el *qué* ya está en el diff.
-
-3. **Sube la rama y abre el PR contra `startup`.**
+3. **Sube.** Cada push a `startup` dispara el check, así que sabes cómo está la
+   rama antes de publicar:
 
    ```sh
-   git push -u origin <tu-rama>
-   gh pr create --base startup --fill
+   git push
    ```
 
-   La plantilla de PR se rellena sola. Complétala: quien revise no tiene tu
-   contexto.
+4. **Abre el PR de publicación cuando lo acumulado esté listo para salir.**
 
-4. **Espera al check `pr`.** Es obligatorio y tarda unos minutos. Comprueba:
+   ```sh
+   gh pr create --base produccion --head startup \
+     --title "Publica los cambios acumulados en startup"
+   ```
+
+   La plantilla de PR se rellena sola. Complétala: resume qué sale en esta
+   tanda.
+
+5. **Espera al check `pr`.** Es obligatorio y tarda unos minutos. Comprueba:
 
    | Paso | Qué atrapa |
    | --- | --- |
@@ -48,23 +55,26 @@ feat/x ── PR + check ──▶ startup ── PR + check ──▶ produccio
    Si falla, el paso de comprobación imprime cada verificación con `ok` o
    `FALLO`: mira ahí antes de volver a subir.
 
-5. **Integra en `startup`** cuando el check esté en verde y las conversaciones
-   resueltas. Usa *squash* si la rama tiene commits de ida y vuelta; *merge*
-   normal si cada commit se sostiene por sí solo.
+6. **Mergea** cuando el check esté en verde y las conversaciones resueltas. Usa
+   *merge* normal: cada commit de `startup` ya se sostiene por sí solo, y así
+   `produccion` conserva el historial de lo que salió.
 
-## Publicar en `produccion`
+## Después de mergear: desplegar
 
-Cuando lo acumulado en `startup` esté listo para salir, se abre el segundo PR:
+El sitio **no se publica solo**. Mergear a `produccion` solo deja el código
+listo. En el servidor, siguiendo los comentarios de
+`deploy/circuitbyte-landing.container`:
 
 ```sh
-gh pr create --base produccion --head startup \
-  --title "Publica los cambios acumulados en startup"
+git pull                                      # ya en produccion
+podman build -t circuitbyte-landing:latest .
+systemctl --user restart circuitbyte-landing
 ```
 
-El mismo check vuelve a correr, ahora contra `produccion`. Al mergear, despliega
-siguiendo los comentarios de `deploy/circuitbyte-landing.container`: la imagen se
-construye en el servidor (`podman build`) y el Quadlet la arranca; el sitio no se
-publica solo.
+## Sobre las ramas
+
+No se crean ramas de feature. Si necesitas aislar un experimento, hazlo en local
+y no lo subas: el remoto tiene `startup` y `produccion`, y nada más.
 
 ## Ejecutar las comprobaciones en local
 

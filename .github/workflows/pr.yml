@@ -1,22 +1,22 @@
 name: pr
 
-# Puerta de entrada a la rama de despliegue. El trabajo del dia a dia integra en
-# `startup`, y de ahi sale el PR que publica en `produccion`; este check debe
-# quedar en verde en los dos saltos.
+# Puerta de entrada a la rama de despliegue. El repositorio tiene dos ramas: se
+# trabaja en `startup` y se publica abriendo un PR hacia `produccion`, que debe
+# tener este check en verde.
 #
-#   feat/x ── PR + check ──▶ startup ── PR + check ──▶ produccion
+#   startup ── PR + check ──▶ produccion
 #
-# Correrlo tambien en los PR hacia `startup` adelanta el fallo al primer nivel y
-# cuesta lo mismo.
+# En `startup` corre a cada push, asi que la rama de trabajo nunca acumula una
+# rotura a ciegas: al abrir el PR ya se sabe como esta.
 #
 # IMPORTANTE: para que esto sea una red y no un adorno, falta marcarlo como
 # required status check en la proteccion de `produccion`. El comando esta al
 # final de CONTRIBUTING.md.
 on:
   pull_request:
-    branches: [produccion, startup]
-  push:
     branches: [produccion]
+  push:
+    branches: [produccion, startup]
   workflow_dispatch:
 
 # Un PR que recibe varios push seguidos solo gasta un runner: el anterior se
