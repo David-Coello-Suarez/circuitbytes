@@ -11,7 +11,7 @@ import { experience } from "../data/experience";
 		<ol class="timeline">
 			{
 				experience.map((job, index) => (
-					<li data-reveal style={`--index:${index}`}>
+					<li>
 						<div class="when">
 							<span class:list={["marker", { current: job.current }]} aria-hidden="true" />
 							<p class="period">{job.period}</p>

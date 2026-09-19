@@ -36,26 +36,5 @@ import Footer from "../components/Footer.astro";
 	<Footer />
 </Layout>
 
-<script>
-	// Entrada por scroll. IntersectionObserver, nunca un listener de scroll.
-	const items = document.querySelectorAll<HTMLElement>("[data-reveal]");
-	const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-	if (items.length && !reduced && "IntersectionObserver" in window) {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (!entry.isIntersecting) continue;
-					entry.target.classList.add("is-visible");
-					observer.unobserve(entry.target);
-				}
-			},
-			{ threshold: 0.15, rootMargin: "0px 0px -60px 0px" },
-		);
-
-		items.forEach((item) => observer.observe(item));
-	} else {
-		// Sin observador o con movimiento reducido, el contenido se muestra tal cual.
-		items.forEach((item) => item.classList.add("is-visible"));
-	}
-</script>
+{/* La entrada por scroll se configura en Layout.astro, junto a la clase que
+    la habilita, para que ocultar y revelar no puedan separarse. */}

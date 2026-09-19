@@ -17,9 +17,7 @@ import { services } from "../data/services";
 			{
 				services.map((service, index) => (
 					<li
-						class="panel"
-						style={`--span:${service.span}; --index:${index}`}
-						data-reveal
+						class="panel" style={`--span:${service.span}`}
 					>
 						<Icon name={service.icon} aria-hidden="true" />
 						<h3>{service.title}</h3>

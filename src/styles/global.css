@@ -179,20 +179,37 @@
 	}
 }
 
-/* ── motion invisible ──
-   Entrada por scroll. El estado base es visible: si el observador no
-   corre, el contenido ya está en su sitio. */
+/* ── motion ──
+   Un solo momento animado: la entrada del hero, escalonada. No hay
+   revelado por scroll: ninguna parte del contenido depende de JavaScript
+   para ser visible, y la página no repite la misma entrada en cada sección.
+   La animación arranca desde el estado final, así que si no llega a
+   ejecutarse el contenido ya está colocado. */
 @media (prefers-reduced-motion: no-preference) {
-	[data-reveal] {
-		opacity: 0;
-		transform: translateY(12px);
-		transition:
-			opacity 600ms var(--ease-out),
-			transform 600ms var(--ease-out);
-		transition-delay: calc(var(--index, 0) * 80ms);
+	.enter {
+		animation: enter 700ms var(--ease-out) backwards;
 	}
 
-	[data-reveal].is-visible {
+	.enter-1 {
+		animation-delay: 60ms;
+	}
+	.enter-2 {
+		animation-delay: 140ms;
+	}
+	.enter-3 {
+		animation-delay: 220ms;
+	}
+	.enter-4 {
+		animation-delay: 300ms;
+	}
+}
+
+@keyframes enter {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+	to {
 		opacity: 1;
 		transform: none;
 	}
