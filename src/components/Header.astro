@@ -5,8 +5,15 @@ import { company, nav } from "../data/company";
 <header>
 	<div class="wrap bar">
 		<a class="brand" href="#top">
-			{/* TODO: sustituir por el logotipo definitivo de CircuitByte. */}
-			<span class="mark" aria-hidden="true"></span>
+			{/* Isotipo extraído de la propuesta institucional.
+			    TODO: sustituir por el original vectorial cuando esté disponible. */}
+			<img
+				class="mark"
+				src="/logo-circuitbyte.png"
+				alt=""
+				width="122"
+				height="88"
+			/>
 			<span class="name">
 				{company.name}
 				<span class="legal">S.A.S.</span>
@@ -89,12 +96,11 @@ import { company, nav } from "../data/company";
 		text-decoration: none;
 	}
 
+	/* el alto manda y el ancho sigue la proporción del isotipo */
 	.mark {
-		width: 1.5rem;
-		height: 1.5rem;
+		width: auto;
+		height: 1.75rem;
 		flex-shrink: 0;
-		border-radius: var(--radius-xs);
-		background: var(--color-ink-strong);
 	}
 
 	.name {
