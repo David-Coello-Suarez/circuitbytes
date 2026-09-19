@@ -50,13 +50,23 @@ RUN find dist -type f \
 # ---------- runner ----------
 # nginx-unprivileged ya corre como UID 101, escucha en 8080 y escribe el pid en
 # /tmp: no hace falta ningun USER root ni parchear nginx.conf.
-FROM nginxinc/nginx-unprivileged:1.29-alpine AS runner
+# Variante -slim: quita los modulos dinamicos (xslt, geoip, image-filter, njs),
+# curl y ca-certificates, que este sitio no usa. Son 5,8 MB de base en lugar de
+# 23 MB, y el binario de nginx es el mismo, asi que gzip_static sigue disponible.
+FROM nginxinc/nginx-unprivileged:1.29-alpine-slim AS runner
 
 ARG GIT_SHA=unknown
 LABEL org.opencontainers.image.title="circuitbyte-landing" \
       org.opencontainers.image.description="Landing estatica de CircuitByte S.A.S." \
       org.opencontainers.image.vendor="CircuitByte S.A.S." \
       org.opencontainers.image.revision="${GIT_SHA}"
+
+# Parches de seguridad del sistema base. La imagen upstream arrastra openssl
+# con CVEs ya corregidas aguas arriba. Es el unico tramo que corre como root, y
+# se vuelve al UID 101 inmediatamente despues.
+USER root
+RUN apk upgrade --no-cache libcrypto3 libssl3
+USER 101
 
 COPY nginx.conf           /etc/nginx/conf.d/default.conf
 COPY security-headers.inc /etc/nginx/conf.d/security-headers.inc

@@ -27,5 +27,5 @@ add_header Permissions-Policy
 #     Via de salida: activar experimental.csp en astro.config.mjs para que
 #     Astro emita hashes, y sustituir 'unsafe-inline' por ellos.
 add_header Content-Security-Policy
-  "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; form-action 'self' https://formspree.io; manifest-src 'self'; upgrade-insecure-requests"
+  "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data: https://www.googletagmanager.com https://google-analytics.com https://*.google-analytics.com; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; connect-src 'self' https://www.googletagmanager.com https://google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com; form-action 'self' https://formspree.io; manifest-src 'self'; upgrade-insecure-requests"
   always;

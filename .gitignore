@@ -7,6 +7,9 @@ prototypes/
 # generated types
 .astro/
 
+# grafo de conocimiento (se regenera con `graphify update .`)
+graphify-out/
+
 # dependencies
 node_modules/
 
