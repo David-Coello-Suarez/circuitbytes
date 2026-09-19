@@ -30,10 +30,6 @@ import { company } from "../data/company";
 					<dd>{company.legalName}</dd>
 				</div>
 				<div>
-					<dt>RUC</dt>
-					<dd class="tabular">{company.ruc}</dd>
-				</div>
-				<div>
 					<dt>Ubicación</dt>
 					<dd>{company.country}</dd>
 				</div>
@@ -74,11 +70,11 @@ import { company } from "../data/company";
 		max-width: 64ch;
 	}
 
+	/* se adapta al número de datos, sin columnas fijas que dejen huecos */
 	.legal {
 		margin: 2rem 0 0;
-		display: grid;
-		grid-template-columns: repeat(3, auto);
-		justify-content: start;
+		display: flex;
+		flex-wrap: wrap;
 		gap: 2.5rem;
 		padding-top: 1.5rem;
 		border-top: 1px solid var(--color-rule);

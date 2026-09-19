@@ -64,11 +64,11 @@ export const heroTech: string[] = [
 export const trust: TrustItem[] = [
 	{
 		label: "Empresa ecuatoriana",
-		detail: `Constituida en ${"Ecuador"}, con RUC público y facturación formal.`,
+		detail: "Sociedad constituida en Ecuador, con facturación formal.",
 	},
 	{
-		label: "RUC 0993403730001",
-		detail: "Contratación con respaldo legal y comprobantes válidos.",
+		label: "Contratación con respaldo",
+		detail: "Propuestas por escrito y comprobantes válidos en cada entrega.",
 	},
 	{
 		label: "Sector educativo",

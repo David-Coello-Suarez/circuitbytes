@@ -50,7 +50,7 @@ export const productCategories: ProductCategory[] = [
 /** Lo que diferencia la venta: no es solo despachar una caja. */
 export const productPromises: string[] = [
 	"Asesoría previa para elegir el equipo según el uso real, no según la ficha técnica",
-	"Facturación formal con RUC y comprobantes válidos",
+	"Facturación formal con comprobantes válidos",
 	"Garantía del fabricante y acompañamiento en la gestión",
 	"Configuración e instalación opcional a cargo de nuestro equipo técnico",
 ];
