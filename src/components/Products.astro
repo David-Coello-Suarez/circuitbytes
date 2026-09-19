@@ -20,10 +20,11 @@ import { productCategories, productPromises } from "../data/products";
 						{category.image ? (
 							<img
 								src={category.image}
-								alt=""
-								width="800"
-								height="600"
+								alt={category.imageAlt}
+								width="1000"
+								height="750"
 								loading="lazy"
+								decoding="async"
 							/>
 						) : (
 							<div class="frame" role="presentation">
