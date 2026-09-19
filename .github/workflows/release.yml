@@ -9,6 +9,9 @@ name: release
 # La version sale de los mensajes de commit (Conventional Commits), y el tag es
 # la fuente de verdad: `package.json` no se toca, porque escribir en `produccion`
 # desde CI se saltaria el propio flujo de PR.
+#
+# Publica la imagen en GHCR antes de etiquetar: si el registro falla, no queda un
+# tag apuntando a una version que nadie puede desplegar.
 on:
   workflow_run:
     workflows: [pr]
@@ -23,6 +26,7 @@ concurrency:
 
 permissions:
   contents: write # crear el tag y el release
+  packages: write # publicar la imagen en GHCR
 
 jobs:
   publicar:
@@ -43,6 +47,14 @@ jobs:
         id: version
         run: |
           set -euo pipefail
+
+          # Antes de cualquier salida: los pasos siguientes etiquetan la imagen
+          # con el sha, y este paso puede terminar por varios caminos.
+          echo "sha=$(git rev-parse --short=7 HEAD)" >> "$GITHUB_OUTPUT"
+
+          # En minusculas a la fuerza: GHCR rechaza las mayusculas y el owner
+          # de este repositorio las tiene.
+          echo "imagen=$(echo 'ghcr.io/${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
 
           ultimo=$(git tag --list 'v*' --sort=-v:refname | head -n1)
 
@@ -109,6 +121,52 @@ jobs:
             exit 1
           fi
 
+      - name: Preparar buildx
+        if: steps.version.outputs.publicar == 'si'
+        uses: docker/setup-buildx-action@v4.4.1
+
+      - name: Entrar en GHCR
+        if: steps.version.outputs.publicar == 'si'
+        uses: docker/login-action@v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # `prod` es el unico tag movil: senala siempre la ultima version publicada.
+      # El del sha y el de version son inmutables, y son los que se despliegan.
+      - name: Publicar la imagen
+        if: steps.version.outputs.publicar == 'si'
+        uses: docker/build-push-action@v7.4.0
+        with:
+          context: .
+          push: true
+          provenance: false
+          sbom: false
+          build-args: GIT_SHA=${{ github.event.workflow_run.head_sha }}
+          tags: |
+            ${{ steps.version.outputs.imagen }}:v${{ steps.version.outputs.version }}
+            ${{ steps.version.outputs.imagen }}:${{ steps.version.outputs.sha }}
+            ${{ steps.version.outputs.imagen }}:prod
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Buildx sube la imagen directo al registro, asi que no esta en el daemon
+      # local; y el paquete es privado. Trivy la descarga con el GITHUB_TOKEN.
+      - name: Escanear la imagen publicada
+        if: steps.version.outputs.publicar == 'si'
+        env:
+          TRIVY_USERNAME: ${{ github.actor }}
+          TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ steps.version.outputs.imagen }}:v${{ steps.version.outputs.version }}
+          scanners: vuln
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '1'
+          format: table
+
       - name: Crear el tag
         if: steps.version.outputs.publicar == 'si'
         run: |
@@ -126,18 +184,25 @@ jobs:
           name: v${{ steps.version.outputs.version }}
           generate_release_notes: true
           body: |
+            Imagen: `${{ steps.version.outputs.imagen }}:v${{ steps.version.outputs.version }}`
+            (tambien como `${{ steps.version.outputs.sha }}` y `prod`)
+
             Para desplegar, en el servidor:
 
             ```sh
-            git fetch --tags && git checkout v${{ steps.version.outputs.version }}
-            podman build -t circuitbyte-landing:latest .
+            podman pull ${{ steps.version.outputs.imagen }}:v${{ steps.version.outputs.version }}
+            sed -i 's|^Image=.*|Image=${{ steps.version.outputs.imagen }}:v${{ steps.version.outputs.version }}|' \
+              ~/.config/containers/systemd/circuitbyte-landing.container
+            systemctl --user daemon-reload
             systemctl --user restart circuitbyte-landing
             ```
+
+            El paquete es privado: requiere `podman login ghcr.io` una vez.
 
       - name: Resumen
         run: |
           if [ "${{ steps.version.outputs.publicar }}" = "si" ]; then
-            echo "Publicada v${{ steps.version.outputs.version }}" >> "$GITHUB_STEP_SUMMARY"
+            echo "Publicada v${{ steps.version.outputs.version }} -> \`${{ steps.version.outputs.imagen }}:v${{ steps.version.outputs.version }}\`" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "Sin version nueva: ningun commit uso feat:, fix: ni perf:" >> "$GITHUB_STEP_SUMMARY"
           fi

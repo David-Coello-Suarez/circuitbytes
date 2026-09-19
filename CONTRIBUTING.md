@@ -70,7 +70,11 @@ startup ── commits ── push ── PR + check ──▶ produccion
 
 Al mergear en `produccion`, y **solo si el check `pr` quedó en verde**, el
 workflow `release` calcula la versión leyendo los commits desde el último tag,
-crea `vX.Y.Z` y publica el GitHub Release con sus notas.
+publica la imagen en GHCR (`vX.Y.Z`, el sha corto y `prod`), la escanea con
+Trivy, crea el tag y publica el GitHub Release con sus notas.
+
+La imagen se sube **antes** de etiquetar: si el registro falla, no queda un tag
+apuntando a una versión que nadie puede desplegar.
 
 | El asunto empieza por | Sube |
 | --- | --- |
@@ -89,18 +93,24 @@ queda en `0.0.1` y no se usa. Escribirlo desde CI obligaría a commitear en
 
 ## Después de mergear: desplegar
 
-El sitio **no se publica solo**. Mergear a `produccion` solo deja el código
-listo. En el servidor, siguiendo los comentarios de
-`deploy/circuitbyte-landing.container`:
+El sitio **no se publica solo**. El release deja la imagen lista en
+`ghcr.io/david-coello-suarez/circuitbytes`, ya escaneada; desplegarla es un paso
+manual en el servidor:
 
 ```sh
-git fetch --tags && git checkout vX.Y.Z       # la version del release
-podman build -t circuitbyte-landing:latest .
+podman pull ghcr.io/david-coello-suarez/circuitbytes:vX.Y.Z
+sed -i 's|^Image=.*|Image=ghcr.io/david-coello-suarez/circuitbytes:vX.Y.Z|' \
+  ~/.config/containers/systemd/circuitbyte-landing.container
+systemctl --user daemon-reload
 systemctl --user restart circuitbyte-landing
 ```
 
-Desplegar el tag y no la punta de la rama deja constancia de qué versión está
-sirviendo el servidor. El propio release trae estos comandos ya rellenados.
+El propio release trae estos comandos ya rellenados con su versión.
+
+El Quadlet fija un **tag de versión, nunca `prod`**: así el archivo dice qué está
+sirviendo el servidor, y un reinicio no arrastra una versión que nadie decidió
+desplegar. El paquete es privado, así que el servidor necesita `podman login
+ghcr.io` una vez, con un token que tenga `read:packages`.
 
 ## Sobre las ramas
 
